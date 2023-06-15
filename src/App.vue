@@ -16,7 +16,6 @@ const GoBack = () => {
 export default {
   GoBack,
   components: {
-	  //
     navbar
   },
 };
