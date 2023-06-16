@@ -5,28 +5,34 @@
     </h2> <br>
     <v-row>
       <v-col>
-    <p> <strong> Nom: </strong> {{etape.nom }} </p> <br>
-    <p> <strong> Type: </strong> {{etape.type }} </p> <br>
-    <p> <strong> Description: </strong> {{etape.texte }} </p>
-  </v-col>
-  <v-col>
-    <img class="img" :src="etape.image_url">
-  </v-col>
+        <h3> Informations </h3>
+          <div class="info"> 
+            <p> <strong> Type :  </strong> {{ etape.type }} </p> <br>
+            <p> <strong> Nom : </strong>  {{ etape.nom }}</p> <br>
+            <p> <strong> Texte : </strong> {{ etape.texte }} </p>
+          </div>
+      </v-col>
+      <v-col>
+        <h3> Image </h3>
+        <img class="img" :src="etape.image_url">
+      </v-col>
   </v-row>
   <br><br>
+  <v-progress-linear color="primary" model-value="100" v-model="progress"></v-progress-linear> <br>
     <div class="precedent">
-      <v-progress-linear color="primary" model-value="100" v-model="progress"></v-progress-linear> <br>
       <v-row>
         <v-col>
-          <button @click="previous()" class="btn greenbtn">Précédent</button><br>
+            <button v-if="etape.ordre != 1" @click="previous()" class="btn bluebtn">Etape précédente</button><br>
         </v-col>
         <v-col>
-          <button @click="next()" class="btn greenbtn">Suivant</button><br>
-
+          <button v-if="etape.ordre != etapes.length" @click="next()" class="btn greenbtn">Etape suivante</button><br>
         </v-col>
       </v-row>
-      <router-link class="routerLink" :to="'/editetapes/' + $route.query.parcoursid"><button
-          class="btn orangebtn">Retour</button></router-link><br>
+      <v-row>
+        <router-link custom v-slot="{ navigate }" :to="'/editetapes/' + $route.query.parcoursid">
+          <button @click="navigate" role="link" class="routerLink btn orangebtn">Quitter</button>
+        </router-link>
+      </v-row>
     </div>
   </div>
 
@@ -89,13 +95,11 @@ export default {
       this.etapes = JSON.parse(this.$route.query.etapes);
       this.parcour = this.$route.query.parcours
       this.etape = this.etapes[parseInt(this.$route.query.ordre) - 1].etape
-      this.progress = (parseInt(this.$route.query.ordre) -1) / (this.etapes.length -1) * 100
-
+      this.progress = (parseInt(this.$route.query.ordre - 1)) / (this.etapes.length - 1) * 100
     },
   },
 
   async mounted() {
-    
     await this.getInfos()
   },
   setup() {
@@ -122,6 +126,14 @@ export default {
   width: 50%;
 }
 .img {
-  width: 80%
+  width: 60%
+}
+
+.info {
+  padding: 10px;
+  margin-right: auto;
+  background-color: #ebebeb;
+  font-size: 14px;
+  border-radius: 10px;
 }
 </style>

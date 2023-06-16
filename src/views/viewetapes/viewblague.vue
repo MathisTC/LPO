@@ -89,8 +89,7 @@ export default {
       this.etapes = JSON.parse(this.$route.query.etapes);
       this.parcour = this.$route.query.parcours
       this.etape = this.etapes[parseInt(this.$route.query.ordre) - 1].etape
-      this.progress = (parseInt(this.$route.query.ordre) -1) / (this.etapes.length -1) * 100
-
+      this.progress = (parseInt(this.$route.query.ordre - 1)) / (this.etapes.length  - 1) * 100
     },
   },
 

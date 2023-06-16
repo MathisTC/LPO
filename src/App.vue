@@ -2,7 +2,9 @@
   <div>
     <navbar></navbar>
     <main>
+      <Transition>
       <router-view></router-view>
+    </Transition>
     </main>
   </div>
 </template>
@@ -22,6 +24,17 @@ export default {
 
 </script>
 <style>
+
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
 
 @font-face {
   font-family: "Sora";
