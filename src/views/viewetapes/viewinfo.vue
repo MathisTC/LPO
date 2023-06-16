@@ -5,7 +5,7 @@
     </h2> <br>
     <v-row>
       <v-col>
-        <h3> Informations </h3>
+        <h3> Informations transition</h3>
           <div class="info"> 
             <p> <strong> Type :  </strong> {{ etape.type }} </p> <br>
             <p> <strong> Nom : </strong>  {{ etape.nom }}</p> <br>
@@ -18,6 +18,7 @@
       </v-col>
   </v-row>
   <br><br>
+  <p> <strong> Etape {{ etape.ordre }} / {{ etapes.length }}</strong></p>
   <v-progress-linear color="primary" model-value="100" v-model="progress"></v-progress-linear> <br>
     <div class="precedent">
       <v-row>

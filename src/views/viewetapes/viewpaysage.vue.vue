@@ -9,7 +9,8 @@
           <div class="info"> 
             <p> <strong> Type :  </strong> {{ etape.type }} </p> <br>
             <p> <strong> Nom : </strong>  {{ etape.nom }}</p> <br>
-            <p> <strong> Texte : </strong> {{ etape.texte }} </p>
+            <p> <strong> Texte : </strong> {{ etape.texte }} </p> <br>
+            <p> <strong> Code à trouver : </strong> {{ etape.code }} </p>
           </div>
       </v-col>
       <v-col>
@@ -18,6 +19,7 @@
       </v-col>
   </v-row>
   <br><br>
+  <p> <strong> Etape {{ etape.ordre }} / {{ etapes.length }}</strong></p>
   <v-progress-linear color="primary" model-value="100" v-model="progress"></v-progress-linear> <br>
     <div class="precedent">
       <v-row>

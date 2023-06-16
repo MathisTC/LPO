@@ -9,15 +9,18 @@
           <div class="info"> 
             <p> <strong> Type :  </strong> {{ etape.type }} </p> <br>
             <p> <strong> Nom : </strong>  {{ etape.nom }}</p> <br>
-            <p> <strong> Texte : </strong> {{ etape.texte }} </p>
+            <p> <strong> Texte : </strong> {{ etape.texte }} </p> <br>
+            <p> <strong> Latitude : </strong> {{ etape.latitude }} </p>
+            <p> <strong> Longitude : </strong> {{ etape.longitude }} </p>
           </div>
       </v-col>
       <v-col>
-        <h3> Image </h3>
+        <h3> Image (Carte) </h3>
         <img class="img" :src="etape.image_url">
       </v-col>
   </v-row>
   <br><br>
+  <p> <strong> Etape {{ etape.ordre }} / {{ etapes.length }}</strong></p>
   <v-progress-linear color="primary" model-value="100" v-model="progress"></v-progress-linear> <br>
     <div class="precedent">
       <v-row>

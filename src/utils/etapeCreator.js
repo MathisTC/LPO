@@ -103,7 +103,7 @@ class JeuQCM extends Etape {
                 this.reponses_tab[2],
                 this.reponses_tab[3]
             ],
-            index_correctReponse: this.index_bonneReponse,
+            index_bonneReponse: this.index_bonneReponse,
             titreSiBonneReponse: this.titreSiBonneReponse,
             titreSiMauvaiseReponse: this.titreSiMauvaiseReponse,
             texteApresReponse: this.texteApresReponse

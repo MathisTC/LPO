@@ -9,7 +9,20 @@
           <div class="info"> 
             <p> <strong> Type :  </strong> {{ etape.type }} </p> <br>
             <p> <strong> Nom : </strong>  {{ etape.nom }}</p> <br>
-            <p> <strong> Texte : </strong> {{ etape.texte }} </p>
+            <p> <strong> Question : </strong> {{ etape.question }} </p> <br>
+            <p> <strong> Bonne réponse : </strong> {{ reponses_tab[etape.index_bonneReponse] }} </p> <br>
+            <p> <strong> Réponse 1 : </strong> {{ reponses_tab[0] }} </p>
+            <p> <strong> Réponse 2 : </strong> {{ reponses_tab[1] }} </p>
+            <p> <strong> Réponse 3 : </strong> {{ reponses_tab[2] }} </p>
+            <p> <strong> Réponse 4 :  </strong> {{ reponses_tab[3] }} </p>
+          </div>
+      </v-col>
+      <v-col>
+        <h3> Après jeu </h3>
+          <div class="info"> 
+            <p> <strong> Titre bonne réponse :  </strong> {{ etape.titreSiBonneReponse }} </p> <br>
+            <p> <strong> Titre mauvaise réponse : </strong>  {{ etape.titreSiMauvaiseReponse }}</p> <br>
+            <p> <strong> Texte : </strong> {{ etape.texteApresReponse }} </p>
           </div>
       </v-col>
       <v-col>
@@ -18,6 +31,7 @@
       </v-col>
   </v-row>
   <br><br>
+  <p> <strong> Etape {{ etape.ordre }} / {{ etapes.length }}</strong></p>
   <v-progress-linear color="primary" model-value="100" v-model="progress"></v-progress-linear> <br>
     <div class="precedent">
       <v-row>
@@ -56,6 +70,7 @@ export default {
       etape: {},
       etapes: {},
       parcour: '',
+      reponses_tab:[]
     }
   },
   methods: {
@@ -101,6 +116,7 @@ export default {
 
   async mounted() {
     await this.getInfos()
+    this.reponses_tab = this.etape.reponses_tab
   },
   setup() {
     const store = useStore()

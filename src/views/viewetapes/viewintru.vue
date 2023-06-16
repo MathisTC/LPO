@@ -9,15 +9,40 @@
           <div class="info"> 
             <p> <strong> Type :  </strong> {{ etape.type }} </p> <br>
             <p> <strong> Nom : </strong>  {{ etape.nom }}</p> <br>
-            <p> <strong> Texte : </strong> {{ etape.texte }} </p>
+            <p> <strong> Question : </strong> {{ etape.question }} </p> <br>
+            <p> <strong> Bonne réponse : </strong> <br> <img class="img" :src="images_tab[etape.index_bonneReponse]"></p> <br>
           </div>
       </v-col>
       <v-col>
-        <h3> Image </h3>
-        <img class="img" :src="etape.image_url">
+        <h3> Après jeu </h3>
+          <div class="info"> 
+            <p> <strong> Titre bonne réponse :  </strong> {{ etape.titreSiBonneReponse }} </p> <br>
+            <p> <strong> Titre mauvaise réponse : </strong>  {{ etape.titreSiMauvaiseReponse }}</p> <br>
+            <p> <strong> Texte : </strong> {{ etape.texteApresReponse }} </p>
+          </div>
+      </v-col>
+      <v-col>
+        <h3> Images </h3>
+        <v-row>
+          <v-col>
+            <img class="img" :src="images_tab[0]">
+          </v-col>
+          <v-col>
+            <img class="img" :src="images_tab[1]">
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <img class="img" :src="images_tab[2]">
+          </v-col>
+          <v-col>
+            <img class="img" :src="images_tab[3]">
+          </v-col>
+        </v-row>      
       </v-col>
   </v-row>
   <br><br>
+  <p> <strong> Etape {{ etape.ordre }} / {{ etapes.length }}</strong></p>
   <v-progress-linear color="primary" model-value="100" v-model="progress"></v-progress-linear> <br>
     <div class="precedent">
       <v-row>
@@ -56,6 +81,7 @@ export default {
       etape: {},
       etapes: {},
       parcour: '',
+      images_tab:[]
     }
   },
   methods: {
@@ -101,6 +127,7 @@ export default {
 
   async mounted() {
     await this.getInfos()
+    this.images_tab = this.etape.images_tab
   },
   setup() {
     const store = useStore()

@@ -9,7 +9,16 @@
           <div class="info"> 
             <p> <strong> Type :  </strong> {{ etape.type }} </p> <br>
             <p> <strong> Nom : </strong>  {{ etape.nom }}</p> <br>
-            <p> <strong> Texte : </strong> {{ etape.texte }} </p>
+            <p> <strong> Charade : </strong> {{ etape.charade }} </p> <br>
+            <p> <strong> Réponse : </strong> {{ etape.reponse }} </p>
+          </div>
+      </v-col>
+      <v-col>
+        <h3> Après jeu </h3>
+          <div class="info"> 
+            <p> <strong> Titre bonne réponse :  </strong> {{ etape.titreSiBonneReponse }} </p> <br>
+            <p> <strong> Titre mauvaise réponse : </strong>  {{ etape.titreSiMauvaiseReponse }}</p> <br>
+            <p> <strong> Texte : </strong> {{ etape.texteApresReponse }} </p>
           </div>
       </v-col>
       <v-col>
@@ -18,6 +27,7 @@
       </v-col>
   </v-row>
   <br><br>
+  <p> <strong> Etape {{ etape.ordre }} / {{ etapes.length }}</strong></p>
   <v-progress-linear color="primary" model-value="100" v-model="progress"></v-progress-linear> <br>
     <div class="precedent">
       <v-row>
