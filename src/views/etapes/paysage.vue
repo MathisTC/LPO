@@ -143,7 +143,6 @@ export default {
     },
     async createEtape () {
       var jeuCode = new JeuCode(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.description, this.code)
-      console.log(jeuCode.generateFirestoreData())
       try {
       const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,jeuCode.generateFirestoreData())
       if (this.image != '') {

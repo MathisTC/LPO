@@ -154,7 +154,6 @@
       },
       async createEtape() {
         var rebus = new JeuRebus(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.question, this.reponse, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse)
-        console.log(rebus.generateFirestoreData())
         try {
           const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours, rebus.generateFirestoreData())
           if (this.image != '') {

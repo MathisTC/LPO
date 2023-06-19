@@ -154,7 +154,6 @@
       },
       async createEtape() {
         var charade = new JeuCharade(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.charade, this.reponse, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse)
-        console.log(charade.generateFirestoreData())
         try {
           const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours, charade.generateFirestoreData())
           if (this.image != '') {

@@ -10,7 +10,8 @@ const TypeEtape = {
     jeu_code: "jeu_code", // DONE
     jeu_charade: "jeu_charade", //DONE
     jeu_compterimage: "jeu_compterimage", //DONE
-    jeu_rebus: "jeu_rebus" //DONE
+    jeu_rebus: "jeu_rebus", //DONE
+    jeu_ecogeste: "jeu_ecogeste" //DONE
 };
 
 class Etape {
@@ -329,6 +330,25 @@ class JeuRebus extends Etape {
 }
 
 // eslint-disable-next-line no-unused-vars
+class JeuEcogeste extends Etape {
+    constructor(ordre, nom, image_url, texte){
+        super(ordre, TypeEtape.jeu_ecogeste, nom, image_url);
+        this.texte = texte;
+    }
+
+    generateFirestoreData() {
+        const data = {
+            ordre: this.ordre,
+            type: this.type,
+            nom: this.nom,
+            image_url: this.image_url,
+            texte: this.texte
+        }
+        return data;
+    }
+}
+
+// eslint-disable-next-line no-unused-vars
 class TransiInfo extends Etape {
     constructor(ordre, nom, image_url, texte){
         // Commun attributes
@@ -378,7 +398,7 @@ class TransiGPS extends Etape {
     }
 }
 
-export { Etape, JeuBlague, JeuCesar, JeuInfo, JeuQCM, JeuPyramide, JeuIntrus, JeuCode, JeuCharade, JeuCompterImage, JeuRebus, TransiGPS, TransiInfo};
+export { Etape, JeuBlague, JeuCesar, JeuInfo, JeuQCM, JeuPyramide, JeuIntrus, JeuCode, JeuCharade, JeuCompterImage, JeuRebus, JeuEcogeste, TransiGPS, TransiInfo};
 
 // Exemple d'utilisation
 //const qcm = new QCM(1, "qcm");

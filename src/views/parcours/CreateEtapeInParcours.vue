@@ -11,11 +11,12 @@
       <router-link class="routerLink" :to="'/pyramide/'+$router.currentRoute.value.params.parcour"><button class="btn greenbtn">Calcul pyramidal</button></router-link>
       <router-link class="routerLink" :to="'/blague/'+$router.currentRoute.value.params.parcour"><button class="btn greenbtn">Blague</button></router-link>
       <router-link class="routerLink" :to="'/lesaviezvous/'+$router.currentRoute.value.params.parcour"><button class="btn greenbtn">Le saviez vous ?</button></router-link>
-      <router-link class="routerLink" :to="'/intru/'+$router.currentRoute.value.params.parcour"><button class="btn greenbtn">Trouvez l'intru</button></router-link>
+      <router-link class="routerLink" :to="'/intru/'+$router.currentRoute.value.params.parcour"><button class="btn greenbtn">Trouvez l'intrus</button></router-link>
       <router-link class="routerLink" :to="'/paysage/'+$router.currentRoute.value.params.parcour"><button class="btn greenbtn">Trouvez un paysage</button></router-link>
       <router-link class="routerLink" :to="'/charade/'+$router.currentRoute.value.params.parcour"><button class="btn greenbtn">Charade</button></router-link>
       <router-link class="routerLink" :to="'/compterimage/'+$router.currentRoute.value.params.parcour"><button class="btn greenbtn">Compter Image</button></router-link>
       <router-link class="routerLink" :to="'/rebus/'+$router.currentRoute.value.params.parcour"><button class="btn greenbtn">Rebus</button></router-link>
+      <router-link class="routerLink" :to="'/ecogeste/'+$router.currentRoute.value.params.parcour"><button class="btn greenbtn">Eco geste</button></router-link>
     </div>
     <br>  
     <h2 align="center">Modèles de Transition:</h2><br>

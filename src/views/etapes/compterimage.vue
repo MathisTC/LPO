@@ -154,7 +154,6 @@
       },
       async createEtape() {
         var compterImage = new JeuCompterImage(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.texte, this.reponse, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse)
-        console.log(compterImage.generateFirestoreData())
         try {
           const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours, compterImage.generateFirestoreData())
           if (this.image != '') {

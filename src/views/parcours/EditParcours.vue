@@ -111,7 +111,6 @@ export default {
   },
   methods: {
     async uploadNewLocalImage(event) {
-      console.log("upload new image from local")
       this.hasimagechanged = true
       this.image_url = ''
       const file = event.target.files[0]; // Accéder à l'objet File

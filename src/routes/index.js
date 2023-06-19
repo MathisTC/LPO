@@ -20,6 +20,7 @@ import qcm from '../views/etapes/qcm.vue'
 import charade from '../views/etapes/charade.vue'
 import compterimage from '../views/etapes/compterimage.vue'
 import rebus from '../views/etapes/rebus.vue'
+import ecogeste from '../views/etapes/ecogeste.vue'
 import CommuneData from '../views/data_commune/CommuneData.vue'
 import transistate from '../views/transistate.vue'
 import ViewBlague from '../views/viewetapes/viewblague.vue'
@@ -34,6 +35,8 @@ import viewpointgps from '../views/viewetapes/viewpointgps.vue'
 import viewpyramide from '../views/viewetapes/viewpyramide.vue'
 import viewqcm from '../views/viewetapes/viewqcm.vue'
 import viewrebus from '../views/viewetapes/viewrebus.vue'
+import viewecogeste from '../views/viewetapes/viewecogeste.vue'
+
 
 const routes = [
   {
@@ -136,6 +139,11 @@ const routes = [
     component: rebus
   },
   {
+    path: '/ecogeste/:parcours',
+    name: 'ecogeste',
+    component: ecogeste
+  },
+  {
     path: '/informationcommune/:commune',
     name: 'informationcommune',
     component: CommuneData,
@@ -204,6 +212,11 @@ const routes = [
     path: '/viewetape/jeu_rebus/:etape',
     name: 'viewrebus',
     component: viewrebus
+  },
+  {
+    path: '/viewetape/jeu_ecogeste/:etape',
+    name: 'viewecogeste',
+    component: viewecogeste
   },
   {
     path: '/transistate',

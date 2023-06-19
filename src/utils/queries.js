@@ -10,7 +10,6 @@ export async function addCity(nomCommune, code_insee) {
         nom: nomCommune.value,
         code_insee: code_insee.value
     });
-      console.log("Document written with id : ", (nomCommune.value).toLowerCase());
     } catch(e) {
       console.error("Error adding document : ", e);
     }
@@ -21,8 +20,17 @@ export async function deleteCommune(nomCommune) {
     await deleteDoc(doc(db, "commune", (nomCommune).toLowerCase()));
 
     //Delete all ref in 'parcours'
-    // TO DO
-
+    // Get collection reference
+    const parcoursCollectionRef = collection(db, 'parcours');
+  
+    // Create query (filter)
+    const q = query(parcoursCollectionRef, where("commune", "==", nomCommune));
+  
+    const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          var id = doc.id;
+          deleteParcours(id);
+        });
 }
 
 export async function getAllCommunes() {
@@ -158,14 +166,12 @@ export async function deleteParcours(id){
 
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach(async (etapeDoc) => {
-      console.log("Suppression du doc :" + etapeDoc.id);
       await deleteDoc(doc(db, "parcours/" + id + "/etape/" + etapeDoc.id));
 
       if(etapeDoc.image_url !== "") {
         const etapeRef = ref(storage, 'image_etape/'+ etapeDoc.id +'.jpg');
         // Delete the image
         deleteObject(etapeRef).then(() => {
-          console.log("Suppression de l'image associée à l'étape")
         }).catch((error) => {
           console.log(error);
         });
@@ -177,7 +183,6 @@ export async function deleteParcours(id){
           const etapeRef = ref(storage, 'image_jeu/' + etapeDoc.id + "_" + i + ".jpg");
           // Delete the image
           deleteObject(etapeRef).then(() => {
-            console.log("Suppression de l'image associée à l'étape")
           }).catch((error) => {
             console.log(error);
           });
@@ -194,7 +199,6 @@ export async function deleteParcours(id){
 
     // Delete the file
     deleteObject(parcoursRef).then(() => {
-      console.log("Suppression de l'image associée au parcours")
     }).catch((error) => {
       console.log(error);
     });  
@@ -259,7 +263,7 @@ export async function deleteEtapeInParcours(id_parcours, id_etape, data_etapes){
         const etapeRef = ref(storage, 'image_jeu/' + id_etape + "_" + i + ".jpg");
         // Delete the image
         deleteObject(etapeRef).then(() => {
-          console.log("Suppression de l'image associée au jeu")
+
         }).catch((error) => {
           console.log(error);
         });
@@ -272,7 +276,7 @@ export async function deleteEtapeInParcours(id_parcours, id_etape, data_etapes){
         const etapeRef = ref(storage, 'image_etape/'+ id_etape +'.jpg');
         // Delete the file
         deleteObject(etapeRef).then(() => {
-          console.log("Suppression de l'image associée à l'étape")
+
         }).catch((error) => {
           console.log(error);
         });
@@ -287,11 +291,9 @@ export async function deleteEtapeInParcours(id_parcours, id_etape, data_etapes){
     data_etapes.splice(indexEtape, 1);
 
     //Delete on firestore
-    console.log("Suppression de l'étape : " + id_etape)
     await deleteDoc(doc(db, "parcours", id_parcours, "etape", id_etape));
 
     //Revalidate other ordre
-    console.log("Revalidation de l'ordre des étapes")
     await validateEtapesInParcours(id_parcours, data_etapes);
     
   }

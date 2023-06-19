@@ -47,7 +47,6 @@ export function uploadImage(fileByte, docName,  fileName, id_parcours) {
         // Upload completed successfully, now we can get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             console.log('File available at', downloadURL);
-            console.log("Updating image url in firestore ...");
             if(docName == 'image_parcours') {
                 updateImageUrlParcours(fileName, downloadURL);
             } else {
@@ -126,11 +125,9 @@ export function uploadMultipleImages(fileByte_tab, docName, fileName, id_parcour
         });
     });
 
-    console.log("Updating download urls in firestore ")
     if(docName == 'image_jeu'){
         Promise.all(uploadPromises).then(() => {
             updateImageUrlJeu(fileName, downloadURLs, id_parcours);
-            console.log("UPLOAD MULTIPLE IMAGES DONE");
         }).catch((error) => {
             console.log("Failed to get download URLs:", error);
         });

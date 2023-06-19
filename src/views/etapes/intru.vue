@@ -243,12 +243,9 @@ export default {
       const reader = new FileReader();
       var reader2 = new FileReader();
       reader.onload = (e) => {
-        console.log(e.target)
         this.bytesarray[event.target.name] = new Uint8Array(e.target.result);
-        console.log(this.bytesarray);
       };
       reader2.onload = function () {
-        console.log('addedimage'+event.target.name)
         var output = document.getElementById('addedimage'+event.target.name);
         output.src = reader2.result;
       };
@@ -300,16 +297,13 @@ export default {
               return null;
             }
           } else {
-            console.log(this.bytesarray[i])
             if (this.bytesarray[i]) {
               byteArray_tab[i] = this.bytesarray[i]
             }
           }
-          //console.log(byteArray_tab);
         }
         //Upload images
         if(byteArray_tab.length == 4) {
-          console.log(byteArray_tab)
           await uploadMultipleImages(byteArray_tab, "image_jeu", id, this.$router.currentRoute.value.params.parcours)
         }
       }
