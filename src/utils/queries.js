@@ -3,12 +3,13 @@ import { setDoc, doc, updateDoc, getDoc, getDocs, collection, addDoc, deleteDoc,
 import { storage } from '../firebaseConfig';
 import { ref, deleteObject } from 'firebase/storage';
 
-export async function addCity(nomCommune, code_insee) {
+export async function addCity(nomCommune, code_insee, code_postal) {
     try {
       // Add a new document in collection "cities"
       await setDoc(doc(db, "commune", (nomCommune.value).toLowerCase()), {
         nom: nomCommune.value,
-        code_insee: code_insee.value
+        code_insee: code_insee.value,
+        code_postal: code_postal.value
     });
     } catch(e) {
       console.error("Error adding document : ", e);

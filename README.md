@@ -20,5 +20,15 @@ npm run build
 npm run lint
 ```
 
+### Docker build
+```
+docker build -t lpo-app .
+```
+
+### Docker run (localhost)
+```
+docker run -it -p 8080:80 --rm --name App-lpo lpo-app
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

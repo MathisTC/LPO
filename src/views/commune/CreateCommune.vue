@@ -1,7 +1,7 @@
 <template>
   <div v-if="user.loggedIn" class="center-div">
     <h2 align="center">
-      Création d'une ville
+      Création d'une commune
     </h2>
     <br>
     <v-row align="start">
@@ -9,7 +9,11 @@
         <form action="#" @submit.prevent="Create">
           <v-textarea label="Nom commune" rows="1" variant="outlined" no-resize autofocus required v-model="nom"></v-textarea>
           <br>
-          <v-textarea label="Code INSEE" rows="1" variant="outlined" no-resize required v-model="code_insee"></v-textarea>
+          <v-textarea label="Code postal" rows="1" variant="outlined" no-resize required v-model="code_postal"></v-textarea>
+          <br>
+          <v-textarea label="Code INSEE (5 chiffres)" rows="1" variant="outlined" no-resize required v-model="code_insee"></v-textarea>
+          <a href="https://www.insee.fr/fr/statistiques/fichier/6800675/v_commune_2023.csv" target="_blank">Lien de téléchargement du fichier contenant les codes INSEE des communes françaises</a>
+          <br>
           <br>
           <button type="submit" class="btn greenbtn">Créer</button>
         </form>
@@ -44,6 +48,7 @@ export default {
     const code_insee = ref('')
     const store = useStore()
     const router = useRouter()
+    const code_postal = ref('')
 
     auth.onAuthStateChanged(user => {
       store.dispatch("fetchUser", user);
@@ -54,7 +59,7 @@ export default {
 
     const Create = async () => {
       try {
-        await addCity(nom, code_insee)
+        await addCity(nom, code_insee, code_postal)
         router.push('/')
       }
       catch (err) {
@@ -65,7 +70,7 @@ export default {
     if (!(user.value.loggedIn)) {
       router.push('/login')
     }
-    return { user, Create, nom, code_insee }
+    return { user, Create, nom, code_insee, code_postal }
   }
 
 
