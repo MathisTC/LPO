@@ -2,20 +2,31 @@ import { storage } from '../firebaseConfig';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { updateImageUrlParcours, updateImageUrlEtape, updateImageUrlJeu } from './queries';
 
-// Input : file byte docName and fileName
-// Output : URL where the file has been upload (need to store this url in firestore after that)
+// Input : file byte, document name, file name and parcours id
+// Input : Byte du fichier, nom du dossier, nom du fichier et identifiant du parcours.
+// Output : L'url par laquelle le fichier sera accessible une fois uploadé. 
+// Besoin de mettre à jour cette url dans Firestore une fois obtenue
 export function uploadImage(fileByte, docName,  fileName, id_parcours) {
-    // Upload file to the object '<docName>/<fileName>'
+
+    // Vérifier la taille de l'image
+    const fileSizeInBytes = fileByte.length;
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2 Mo
+
+    if (fileSizeInBytes > maxSizeInBytes) {
+        throw new Error("La taille de l'image dépasse la limite autorisée.");
+    }
+    
+    // Upload le fichier dans le dossier <docName> avec le nom <fileName>
     const storageRef = ref(storage, docName + "/" + fileName +'.jpg');
     const metadata = {
         contentType: 'image/jpeg'
     }
     const uploadTask = uploadBytesResumable(storageRef, fileByte, metadata);
 
-    // Listen for state changes, errors, and completion of the upload.
+    // Ecoute les changements d'état, les erreurs et l'achèvement de téléchargement
     uploadTask.on('state_changed',
     (snapshot) => {
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        // Récupération de la progression de la tâche incluant le nombre d'octet uploads et le nombre total d'octet à upload
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log('Upload is ' + progress + '% done');
         switch (snapshot.state) {
@@ -44,18 +55,15 @@ export function uploadImage(fileByte, docName,  fileName, id_parcours) {
             }
     }, 
     () => {
-        // Upload completed successfully, now we can get the download URL
+        // Upload effectué avec succes, maintenant on peut obtenir l'url de téléchargement
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            console.log('File available at', downloadURL);
+            //console.log('File available at', downloadURL);
             if(docName == 'image_parcours') {
                 updateImageUrlParcours(fileName, downloadURL);
             } else {
-                if(docName == 'image_jeu') {
-                    //updateImageUrlJeu(fileName, downloadURL, id_parcours)
-                } else {
+                if(docName !== 'image_jeu') {
                     updateImageUrlEtape(fileName, downloadURL, id_parcours)
-
-                }
+                } 
             }
             return downloadURL;
         });
@@ -65,13 +73,28 @@ export function uploadImage(fileByte, docName,  fileName, id_parcours) {
     return "";
 }
 
+// Même méthode que uploadImage mais gère l'upload de 4 images en parallèle 
+// (utilisée pour l'upload des images de jeu_intrus)
 export function uploadMultipleImages(fileByte_tab, docName, fileName, id_parcours) {
+
+    // Vérifier la taille de l'image
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2 Mo
+    let fileSizeInBytes = 0;
+
+    for(let i=0; i<fileByte_tab.length; i++){
+        fileSizeInBytes = fileByte_tab[i].length;
+
+        if (fileSizeInBytes > maxSizeInBytes) {
+            throw new Error("La taille d'une des images dépasse la limite autorisée.");
+        }
+    }
+
     var downloadURLs = ['','','','']
     console.log("Starting upload " + fileByte_tab.length + " images");
 
     const uploadPromises = fileByte_tab.map((fileByte, i) => {
         return new Promise((resolve, reject) => {
-            // Upload file to the object '<docName>/<fileName>_i'
+            // Upload le fichier dans le dossier <docName> avec le nom <fileName>_i
             const path = docName + "/" + fileName + "_" + i + ".jpg";
             const storageRef = ref(storage, path);
             const metadata = {
@@ -79,10 +102,10 @@ export function uploadMultipleImages(fileByte_tab, docName, fileName, id_parcour
             }
             const uploadTask = uploadBytesResumable(storageRef, fileByte, metadata);
 
-            // Listen for state changes, errors, and completion of the upload.
+            // Ecoute les changements d'état, les erreurs et l'achèvement de téléchargement
             uploadTask.on('state_changed',
                 (snapshot) => {
-                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    // Récupération de la progression de la tâche incluant le nombre d'octet uploads et le nombre total d'octet à upload
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     console.log('Upload [' + i + '] is ' + progress + '% done');
                     switch (snapshot.state) {
@@ -112,7 +135,7 @@ export function uploadMultipleImages(fileByte_tab, docName, fileName, id_parcour
                     reject(error);
                 },
                 () => {
-                    // Upload completed successfully, now we can get the download URL
+                    // Upload effectué avec succes, maintenant on peut obtenir l'url de téléchargement
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                         downloadURLs[i] = downloadURL;
                         console.log('Image ['+ i + '] available at', downloadURL);

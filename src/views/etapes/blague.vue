@@ -139,32 +139,26 @@ export default {
     },
     async createEtape () {
       var blague = new JeuBlague(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.enonce)
-      try {
       const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,blague.generateFirestoreData())
-      if (this.image != '') {
-        try {
-          const response = await fetch(this.image);
-          const arrayBuffer = await response.arrayBuffer();
-          const byteArray = new Uint8Array(arrayBuffer);
-          await uploadImage(byteArray, "image_etape", id, this.$router.currentRoute.value.params.parcours )
-
-        } catch (error) {
-          console.error(error);
-          return null;
+      try {
+        if (this.image != '') {
+            const response = await fetch(this.image);
+            const arrayBuffer = await response.arrayBuffer();
+            const byteArray = new Uint8Array(arrayBuffer);
+            await uploadImage(byteArray, "image_etape", id, this.$router.currentRoute.value.params.parcours )
+        } else {
+          if (this.bytesarray) {
+              await uploadImage(this.bytesarray, "image_etape",id, this.$router.currentRoute.value.params.parcours)          
+          }
         }
-      } else {
-        if (this.bytesarray) {
-          await uploadImage(this.bytesarray, "image_etape",id, this.$router.currentRoute.value.params.parcours)
-        }
-    }
       }
       catch(err) {
-      console.log(err)
-    }
+        console.log(err)
+        alert("Erreur pendant le téléchargement de l'image, l'image est peut-être trop grande (max : 2Mo)")
+      }
+
       this.$router.push('/editetapes/' + this.$router.currentRoute.value.params.parcours)
     }
-
-
   },
 
   mounted() {

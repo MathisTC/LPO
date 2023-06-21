@@ -158,21 +158,20 @@ export default {
     },
     //UPDATE PARCOURS METHOD
     async EditParcours() {
-      if (this.image_url !== '' && this.imagepicked == true && this.hasimagechanged) { //FROM API IMAGE
-        try {
-          const response = await fetch(this.image_url);
-          const arrayBuffer = await response.arrayBuffer();
-          const byteArray = new Uint8Array(arrayBuffer);
-          uploadImage(byteArray, "image_parcours", this.$router.currentRoute.value.params.parcours, '')
-
-        } catch (error) {
-          console.error(error);
-          return null;
+      try {
+        if (this.image_url !== '' && this.imagepicked == true && this.hasimagechanged) { //FROM API IMAGE         
+            const response = await fetch(this.image_url);
+            const arrayBuffer = await response.arrayBuffer();
+            const byteArray = new Uint8Array(arrayBuffer);
+            uploadImage(byteArray, "image_parcours", this.$router.currentRoute.value.params.parcours, '')
+        } else { //FROM LOCAL IMAGE
+          if (this.bytesarray && this.hasimagechanged) {
+            uploadImage(this.bytesarray, "image_parcours", this.$router.currentRoute.value.params.parcours, '')
+          }
         }
-      } else { //FROM LOCAL IMAGE
-        if (this.bytesarray && this.hasimagechanged) {
-          uploadImage(this.bytesarray, "image_parcours", this.$router.currentRoute.value.params.parcours, '')
-        }
+      } catch (error) {
+        console.error(error);
+        alert("Erreur pendant le téléchargement de l'image, l'image est peut-être trop grande (max : 2Mo)") 
       }
       const new_p_obj = {
         commune: this.commune,

@@ -20,7 +20,7 @@
         <br>
       </v-col>
       <v-col>
-        <h3 align="center">Ajoutez les images puis sélectionnez l'intru</h3> <br>
+        <h3 align="center">Ajoutez les images puis sélectionnez l'intrus</h3> <br>
         <v-row>
           <v-col>
             <div align="center">
@@ -287,15 +287,9 @@ export default {
         const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours, intru.generateFirestoreData())
         for (var i = 0; i<=3; i++) {
           if (this.image[i] != '') {
-            try {
               const response = await fetch(this.image[i]);
               const arrayBuffer = await response.arrayBuffer();
               byteArray_tab[i] = new Uint8Array(arrayBuffer);
-
-            } catch (error) {
-              console.error(error);
-              return null;
-            }
           } else {
             if (this.bytesarray[i]) {
               byteArray_tab[i] = this.bytesarray[i]
@@ -309,6 +303,7 @@ export default {
       }
       catch (err) {
         console.log(err)
+        alert("Erreur pendant le téléchargement d'une des images, l'image est peut-être trop grande (max : 2Mo)")
       }
 
       this.$router.push('/editetapes/' + this.$router.currentRoute.value.params.parcours)
@@ -318,7 +313,6 @@ export default {
   mounted() {
     getParcoursContents(this.$router.currentRoute.value.params.parcours).then((res) => {
       this.parcour = res
-
     });
 
   },

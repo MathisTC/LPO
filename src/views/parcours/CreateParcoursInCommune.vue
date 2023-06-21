@@ -159,26 +159,24 @@ export default {
         image_url: ''
       }
       const id_parcours = await createParcours(obj);
-      if (this.image != '') {
-        try {
+      try {
+        if (this.image != '') {
           const response = await fetch(this.image);
           const arrayBuffer = await response.arrayBuffer();
           const byteArray = new Uint8Array(arrayBuffer);
           uploadImage(byteArray, "image_parcours", id_parcours, '')
-
-        } catch (error) {
-          console.error(error);
-          return null;
+        } else {
+          if (this.bytesarray) {
+            uploadImage(this.bytesarray, "image_parcours", id_parcours, '')
+          }
         }
-      } else {
-        if (this.bytesarray) {
-          uploadImage(this.bytesarray, "image_parcours", id_parcours, '')
-        }
+      } catch (error) {
+        console.error(error);
+        alert("Erreur pendant le téléchargement de l'image, l'image est peut-être trop grande (max : 2Mo)") 
       }
+
       this.$router.push('/editcommune/' + this.commune)
     }
-
-    
   },
   mounted() {
     this.commune = this.$router.currentRoute.value.params.commune;

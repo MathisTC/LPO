@@ -14,6 +14,19 @@ const TypeEtape = {
     jeu_ecogeste: "jeu_ecogeste" //DONE
 };
 
+/* N'importe quelle étape, que ce soit une transition ou un jeu possède des champs communs : 
+ordre : un entier allant de 1 à ... qui indique la position de l'étape dans le parcours
+nom : Le 'titre' de l'étape qui est affiché en haut de la page de l'étape
+type : Un String qui permet de spécifié quel est le type de l'étape et ainsi pouvoir savoir quel champs spécifique 
+        sont associé à l'étape (cf. variable TypeEtape).
+image_url : Un lien de l'image hébergée sur Firebase dans Storage, au départ ce champ est vide tant que la méthode "UploadImage"
+            n'a pas retourné un lien de téléchargement de l'image.
+Ainsi, chaque nouvelle classe de jeu ou transition hérite de la classe "Etape" et doit être associée à un type
+contenu dans la variable TypeEtape ci-dessus.
+Enfin, il faut s'assurer de rédéfinir la méthode "generateFirestoreData()" pour chaque classe héritée de Etape. Cette méthode est chargée de retourner
+un objet qui sera écrit dans une sous-collection 'étape' d'un parcours donné sur Firestore. L'objet retourné doit contenir les champs communs
+et spécifique de l'étape en question.
+*/
 class Etape {
     constructor(ordre, type, nom, image_url) {
       this.ordre = ordre;

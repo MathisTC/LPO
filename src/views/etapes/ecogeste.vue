@@ -142,35 +142,28 @@
         try {
         const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,ecogeste.generateFirestoreData())
         if (this.image != '') {
-          try {
             const response = await fetch(this.image);
             const arrayBuffer = await response.arrayBuffer();
             const byteArray = new Uint8Array(arrayBuffer);
             await uploadImage(byteArray, "image_etape", id, this.$router.currentRoute.value.params.parcours )
-  
-          } catch (error) {
-            console.error(error);
-            return null;
-          }
         } else {
           if (this.bytesarray) {
-            await uploadImage(this.bytesarray, "image_etape",id, this.$router.currentRoute.value.params.parcours)
+              await uploadImage(this.bytesarray, "image_etape",id, this.$router.currentRoute.value.params.parcours)          
           }
-      }
         }
-        catch(err) {
+      }
+      catch(err) {
         console.log(err)
+        alert("Erreur pendant le téléchargement de l'image, l'image est peut-être trop grande (max : 2Mo)")
       }
-        this.$router.push('/editetapes/' + this.$router.currentRoute.value.params.parcours)
+
+      this.$router.push('/editetapes/' + this.$router.currentRoute.value.params.parcours)
       }
-  
-  
     },
   
     mounted() {
       getParcoursContents(this.$router.currentRoute.value.params.parcours).then((res) => { 
         this.parcour = res
-  
       });
       
     },

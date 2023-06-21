@@ -170,26 +170,21 @@ export default {
     async createEtape() {
       var gps = new TransiGPS(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.description, this.latitude, this.longitude)
       try {
-        const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours, gps.generateFirestoreData())
+        const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,gps.generateFirestoreData())
         if (this.image != '') {
-          try {
             const response = await fetch(this.image);
             const arrayBuffer = await response.arrayBuffer();
             const byteArray = new Uint8Array(arrayBuffer);
-            await uploadImage(byteArray, "image_etape", id, this.$router.currentRoute.value.params.parcours)
-
-          } catch (error) {
-            console.error(error);
-            return null;
-          }
+            await uploadImage(byteArray, "image_etape", id, this.$router.currentRoute.value.params.parcours )
         } else {
           if (this.bytesarray) {
-            await uploadImage(this.bytesarray, "image_etape", id, this.$router.currentRoute.value.params.parcours)
+              await uploadImage(this.bytesarray, "image_etape",id, this.$router.currentRoute.value.params.parcours)          
           }
         }
       }
-      catch (err) {
+      catch(err) {
         console.log(err)
+        alert("Erreur pendant le téléchargement de l'image, l'image est peut-être trop grande (max : 2Mo)")
       }
       this.$router.push('/editetapes/' + this.$router.currentRoute.value.params.parcours)
     },
@@ -216,8 +211,6 @@ export default {
           console.log("Une erreur s'est produite lors de la récupération des coordonnées.", error);
         });
     }
-
-
   },
 
   mounted() {
