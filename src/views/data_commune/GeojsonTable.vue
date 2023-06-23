@@ -75,6 +75,7 @@ export default {
         },
 
         fetchData_filter() {
+            console.log(this.groupe)
             fetch("https://data.lpo-aura.org/web/files/data/mv_sem_com_list_sp.geojson")
                 .then((response) => response.json())
                 .then((data) => {
@@ -88,10 +89,10 @@ export default {
                         .filter((properties) => {
                             return (
                                 properties.area_code === this.areaCode &&
-                                properties.lr === this.lr &&
-                                properties.protection === this.pr &&
-                                properties.reproduction === this.re &&
-                                this.groupe.includes(properties.groupe_taxo_fr)
+                                (properties.lr === this.lr || this.lr === 'non' )&&
+                                (properties.protection === this.pr || this.pr === 'non' ) &&
+                                (properties.reproduction === this.re|| this.re === 'non') &&
+                                ( !this.groupe || this.groupe.length == 0 || this.groupe.includes(properties.groupe_taxo_fr))
                             );
                         }
                         );
