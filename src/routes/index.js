@@ -1,3 +1,4 @@
+/* eslint-disable */ 
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/Login.vue';
 import GestionCommune from '../views/GestionCommune.vue';
@@ -8,6 +9,7 @@ import CreateParcoursInCommune from '../views/parcours/CreateParcoursInCommune.v
 import EditParcours from '../views/parcours/EditParcours.vue'
 import EditEtapes from '../views/parcours/EditEtapes.vue'
 import CreateEtapeInParcours from '../views/parcours/CreateEtapeInParcours.vue'
+
 import blague from '../views/etapes/blague.vue'
 import codecesar from '../views/etapes/codecesar.vue'
 import informations from '../views/etapes/informations.vue'
@@ -23,6 +25,7 @@ import rebus from '../views/etapes/rebus.vue'
 import ecogeste from '../views/etapes/ecogeste.vue'
 import CommuneData from '../views/data_commune/CommuneData.vue'
 import transistate from '../views/transistate.vue'
+
 import ViewBlague from '../views/viewetapes/viewblague.vue'
 import ViewInfo from '../views/viewetapes/viewinfo.vue'
 import ViewCharade from '../views/viewetapes/viewcharade.vue'
@@ -37,10 +40,29 @@ import viewqcm from '../views/viewetapes/viewqcm.vue'
 import viewrebus from '../views/viewetapes/viewrebus.vue'
 import viewecogeste from '../views/viewetapes/viewecogeste.vue'
 
+import editBlague from '../views/editetapes/editBlague.vue'
+import editCodeCesar from '../views/editetapes/editCodeCesar.vue'
+import editInformations from '../views/editetapes/editInformations.vue'
+import editIntru from '../views/editetapes/editIntru.vue'
+import editLesaviezvous from '../views/editetapes/editLeSaviezVous.vue'
+import editPaysage from '../views/editetapes/editPaysage.vue'
+import editPointgps from '../views/editetapes/editPointgps.vue'
+import editPyramide from '../views/editetapes/editPyramide.vue'
+import editQcm from '../views/editetapes/editQcm.vue'
+import editCharade from '../views/editetapes/editCharade.vue'
+import editCompterimage from '../views/editetapes/editCompterImage.vue'
+import editRebus from '../views/editetapes/editRebus.vue'
+import editEcogeste from '../views/editetapes/editEcogeste.vue'
+
 
 const routes = [
   {
-    path: '/login',
+    path: '/gestioncommune',
+    name: 'gestioncommune',
+    component: GestionCommune
+  },
+  {
+    path: '/',
     name: 'login',
     component: Login
   },
@@ -149,11 +171,6 @@ const routes = [
     component: CommuneData,
   },
   {
-    path: '/',
-    name: 'gestioncommune',
-    component: GestionCommune
-  },
-  {
     path: '/viewetape/jeu_blague/:etape',
     name: 'viewblague',
     component: ViewBlague
@@ -217,6 +234,71 @@ const routes = [
     path: '/viewetape/jeu_ecogeste/:etape',
     name: 'viewecogeste',
     component: viewecogeste
+  },
+  {
+    path: '/editetape/jeu_blague/:etape',
+    name: 'editBlague',
+    component: editBlague
+  },
+  {
+    path: '/editetape/transi_info/:etape',
+    name: 'editinfo',
+    component: editInformations
+  },
+  {
+    path: '/editetape/jeu_charade/:etape',
+    name: 'editcharade',
+    component: editCharade
+  },
+  {
+    path: '/editetape/jeu_cesar/:etape',
+    name: 'editcesar',
+    component: editCodeCesar
+  },
+  {
+    path: '/editetape/jeu_compterimage/:etape',
+    name: 'editcompterimage',
+    component: editCompterimage
+  },
+  {
+    path: '/editetape/jeu_intrus/:etape',
+    name: 'editintru',
+    component: editIntru
+  },
+  {
+    path: '/editetape/jeu_info/:etape',
+    name: 'editlesaviezvous',
+    component: editLesaviezvous
+  },
+  {
+    path: '/editetape/jeu_code/:etape',
+    name: 'editpaysage',
+    component: editPaysage
+  },
+  {
+    path: '/editetape/transi_gps/:etape',
+    name: 'editgps',
+    component: editPointgps
+  },
+  {
+    path: '/editetape/jeu_pyramide/:etape',
+    name: 'editpyramide',
+    component: editPyramide
+  },
+  {
+    path: '/editetape/jeu_qcm/:etape',
+    name: 'editqcm',
+    component: editQcm
+  },
+  {
+    path: '/editetape/jeu_rebus/:etape',
+    name: 'editrebus',
+    component: editRebus
+  },
+  {
+    path: '/editetape/jeu_ecogeste/:etape',
+    name: 'editecogeste',
+    component: editEcogeste
   },
   {
     path: '/transistate',

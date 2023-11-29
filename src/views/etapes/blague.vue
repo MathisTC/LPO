@@ -11,6 +11,7 @@
         <br>
         <v-textarea  label="Enoncé de la blague" rows="3" required auto-grow v-model="enonce" />
         <br>
+        <v-slider step="5" thumb-label="always" :min="0" :max="100" v-model="poids"></v-slider>
       </v-col>
       <v-col>
         <div align="center">
@@ -90,7 +91,8 @@ export default {
       enonce: '',
       especes: [],
       espece: '',
-      parcour: {}
+      parcour: {},
+      poids: 0
     }
   },
   methods: {
@@ -138,7 +140,7 @@ export default {
       }
     },
     async createEtape () {
-      var blague = new JeuBlague(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.enonce)
+      var blague = new JeuBlague(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.enonce, this.poids)
       const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,blague.generateFirestoreData())
       try {
         if (this.image != '') {

@@ -13,6 +13,7 @@
           <br>
           <v-text-field label="Réponse" type="number" class="selectNumber" no-resize required v-model="reponse" />
           <br>
+          <v-slider step="5" thumb-label="always" :min="0" :max="100" v-model="poids"></v-slider>
         </v-col>
         <v-col>
           <h3 align="center"> Affichage après réponse</h3>
@@ -105,7 +106,8 @@
         texteApresReponse: '',
         especes: [],
         espece: '',
-        parcour: {}
+        parcour: {},
+        poids: 0
       }
     },
     methods: {
@@ -153,7 +155,7 @@
         }
       },
       async createEtape() {
-        var compterImage = new JeuCompterImage(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.texte, this.reponse, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse)
+        var compterImage = new JeuCompterImage(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.texte, this.reponse, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse, this.poids)
         try {
         const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,compterImage.generateFirestoreData())
         if (this.image != '') {

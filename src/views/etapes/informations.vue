@@ -11,6 +11,7 @@
         <br>
         <v-textarea  label="Informations" rows="3" required auto-grow v-model="description" />
         <br>
+        <v-slider step="5" thumb-label="always" :min="0" :max="100" v-model="poids"></v-slider>
       </v-col>
       <v-col>
         <div align="center">
@@ -90,7 +91,8 @@ export default {
       description: '',
       especes: [],
       espece: '',
-      parcour: {}
+      parcour: {},
+      poids: 0
     }
   },
   methods: {
@@ -138,7 +140,7 @@ export default {
       }
     },
     async createEtape () {
-      var information = new TransiInfo(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.description)
+      var information = new TransiInfo(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.description, this.poids)
       try {
         const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,information.generateFirestoreData())
         if (this.image != '') {

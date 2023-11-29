@@ -18,6 +18,8 @@
           <v-text-field label="Longitude" placeholder="Longitude" type="number" required v-model="longitude" />
           <br>
         </div>
+        <br>
+        <v-slider step="5" thumb-label="always" :min="0" :max="100" v-model="poids"></v-slider>
       </v-col>
       <v-col>
         <h3 align="center">Carte interactive </h3>
@@ -116,7 +118,8 @@ export default {
       originalLongitude: '',
       especes: [],
       espece: '',
-      parcour: {}
+      parcour: {},
+      poids: 0
     }
   },
   methods: {
@@ -168,7 +171,7 @@ export default {
       }
     },
     async createEtape() {
-      var gps = new TransiGPS(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.description, this.latitude, this.longitude)
+      var gps = new TransiGPS(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.description, this.latitude, this.longitude, this.poids)
       try {
         const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,gps.generateFirestoreData())
         if (this.image != '') {

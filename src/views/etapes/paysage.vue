@@ -13,6 +13,7 @@
         <br>
         <v-textarea class="selectCode" label="Code à trouver" rows="1" no-resize required v-model="code"></v-textarea>
         <br>
+        <v-slider step="5" thumb-label="always" :min="0" :max="100" v-model="poids"></v-slider>
       </v-col>
       <v-col>
         <div align="center">
@@ -94,7 +95,8 @@ export default {
       code: '',
       especes: [],
       espece: '',
-      parcour: {}
+      parcour: {},
+      poids: 0
     }
   },
   methods: {
@@ -142,7 +144,7 @@ export default {
       }
     },
     async createEtape () {
-      var jeuCode = new JeuCode(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.description, this.code)
+      var jeuCode = new JeuCode(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.description, this.code, this.poids)
       try {
         const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,jeuCode.generateFirestoreData())
         if (this.image != '') {

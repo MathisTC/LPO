@@ -5,31 +5,49 @@
       Etapes du parcours:
       {{ parcour }}
     </h2>
-    <p align="center">Pour changer l'ordre des étapes, glisser les différentes étapes puis cliquer sur le bouton valider</p>
+
+    <div align="center" class="brouillon" v-if="brouillon">
+      <h3>Ce parcours est en brouillon. Appuyez sur le bouton pour le mettre en ligne</h3>
+      <button @click="publishParcours($route.params.parcour)" class="btn greenbtn">Publier le parcours
+      </button>
+    </div>
+
+    <div align="center" class="brouillon" v-else>
+      <h3>Ce parcours est en ligne. Appuyez sur le bouton pour le mettre en brouillon</h3>
+      <button @click="hideParcours($route.params.parcour)" class="btn orangebtn">Mettre le parcours en brouillon
+      </button>
+    </div>
+
+    <br>
+    <p align="center">Pour changer l'ordre des étapes, glisser les différentes étapes puis cliquer sur le bouton valider
+    </p>
     <draggable v-model="etapes" tag="ul" itemKey="id" ghost-class="ghost" :animation="300">
-      
+
       <template #item="{ element: etape }">
 
-    <div class="parcours">
-      <div>{{ etape.etape.type+": "+etape.etape.nom }} </div>
-      <div>
-        <svg-icon @click="ViewEtape(etape)" class="iconEditDelete" type="mdi" :path="mdiEyeOutline" :size="20">
-        </svg-icon>
-        <svg-icon @click="DeleteEtape(etape)" class="iconEditDelete" type="mdi" :path="mdiDeleteOutline" :size="20"></svg-icon>
-      </div>
-    </div>
-    </template>
+        <div class="parcours">
+          <div>{{ etape.etape.type + ": " + etape.etape.nom }} </div>
+          <div>
+            <svg-icon @click="EditEtape(etape)" class="iconEditDelete" type="mdi" :path="mdiPencilOutline" :size="20">
+            </svg-icon>
+            <svg-icon @click="ViewEtape(etape)" class="iconEditDelete" type="mdi" :path="mdiEyeOutline" :size="20">
+            </svg-icon>
+            <svg-icon @click="DeleteEtape(etape)" class="iconEditDelete" type="mdi" :path="mdiDeleteOutline"
+              :size="20"></svg-icon>
+          </div>
+        </div>
+      </template>
     </draggable>
     <br><br>
     <v-row>
-    <button @click="AddEtapeInParcours($route.params.parcour)" class="btn bluebtn">Ajouter une étape
-    </button>
-    <button @click="validateParcours($route.params.parcour)" class="btn greenbtn">Valider l'ordre du parcours
-    </button>
+      <button @click="AddEtapeInParcours($route.params.parcour)" class="btn bluebtn">Ajouter une étape
+      </button>
+      <button @click="validateParcours($route.params.parcour)" class="btn greenbtn">Valider l'ordre du parcours
+      </button>
     </v-row>
     <br>
     <div class="precedent">
-      <router-link custom v-slot="{ navigate }" :to="'/editcommune/'+commune">
+      <router-link custom v-slot="{ navigate }" :to="'/editcommune/' + commune">
         <button @click="navigate" role="link" class="routerLink btn orangebtn">Retour</button>
       </router-link>
     </div>
@@ -44,10 +62,10 @@
 <script>
 import { useStore } from "vuex";
 import { computed } from "vue";
-import { mdiEyeOutline } from '@mdi/js';
+import { mdiEyeOutline, mdiPencilOutline } from '@mdi/js';
 import { mdiDeleteOutline } from '@mdi/js';
 import { auth } from '../../firebaseConfig'
-import { getParcoursContents, validateEtapesInParcours, deleteEtapeInParcours  } from '../../utils/queries.js'
+import { getParcoursContents, validateEtapesInParcours, deleteEtapeInParcours, setBrouillon } from '../../utils/queries.js'
 import draggable from 'vuedraggable';
 
 
@@ -58,53 +76,79 @@ export default {
       parcour: '_',
       etapes: [],
       commune: '_',
+      brouillon: Boolean
     }
   },
   methods: {
     ViewEtape(etape) {
-      if(etape.id != this.etapes[etape.etape.ordre -1].id) {
-        validateEtapesInParcours(this.$router.currentRoute.value.params.parcour,JSON.parse(JSON.stringify(this.etapes)))
+      if (etape.id != this.etapes[etape.etape.ordre - 1].id) {
+        validateEtapesInParcours(this.$router.currentRoute.value.params.parcour, JSON.parse(JSON.stringify(this.etapes)))
       }
       this.$router.push({
-        path: '/viewetape/'+etape.etape.type+'/'+etape.id,
-        query: { 
+        path: '/viewetape/' + etape.etape.type + '/' + etape.id,
+        query: {
           parcoursid: this.$router.currentRoute.value.params.parcour,
           parcours: this.parcour,
           etapes: JSON.stringify(this.etapes),
           ordre: etape.etape.ordre
         }
-    })
+      })
+    },
+
+    EditEtape(etape) {
+      if (etape.id != this.etapes[etape.etape.ordre - 1].id) {
+        validateEtapesInParcours(this.$router.currentRoute.value.params.parcour, JSON.parse(JSON.stringify(this.etapes)))
+      }
+      this.$router.push({
+        path: '/editetape/' + etape.etape.type + '/' + etape.id,
+        query:  {
+          parcoursId: this.$router.currentRoute.value.params.parcour,
+          etape: JSON.stringify(etape)
+        }
+      })
     },
 
     AddEtapeInParcours() {
-      this.$router.push('/createetapeinparcours/'+this.$router.currentRoute.value.params.parcour)
+      this.$router.push('/createetapeinparcours/' + this.$router.currentRoute.value.params.parcour)
     },
     validateParcours() {
-      validateEtapesInParcours(this.$router.currentRoute.value.params.parcour,JSON.parse(JSON.stringify(this.etapes)))
+      validateEtapesInParcours(this.$router.currentRoute.value.params.parcour, JSON.parse(JSON.stringify(this.etapes)))
       window.alert("L'ordre des étapes a été mis à jour")
     },
     DeleteEtape(etape) {
       const response = confirm("Souhaitez vous vraiment supprimer l'étape: " + etape.etape.nom);
       if (response) {
         deleteEtapeInParcours(this.$router.currentRoute.value.params.parcour, etape.id, JSON.parse(JSON.stringify(this.etapes)))
-        for (let i = 0; i <this.etapes.length; i++)
-        {
-          if (JSON.parse(JSON.stringify(etape)).id == this.etapes[i].id)
-          {
+        for (let i = 0; i < this.etapes.length; i++) {
+          if (JSON.parse(JSON.stringify(etape)).id == this.etapes[i].id) {
             this.etapes.splice(i, 1)
           }
         }
       }
+    },
+    async hideParcours(parcoursId) {
+      await setBrouillon(parcoursId, true).then(() => {
+        this.getParcours()
+      })
+    },
+    async publishParcours(parcoursId) {
+      await setBrouillon(parcoursId, false).then(() => {
+        this.getParcours()
+      })
+    },
+    async getParcours() {
+      await getParcoursContents(this.$router.currentRoute.value.params.parcour).then((res) => {
+        this.brouillon = res.data.brouillon
+        this.parcour = res.data.titre;
+        this.commune = res.data.commune;
+        this.etapes = res.etapes;
+        this.etapes.sort((a, b) => a.etape.ordre - b.etape.ordre);
+      });
     }
   },
 
-  mounted() {
-    getParcoursContents(this.$router.currentRoute.value.params.parcour).then((res) => {
-      this.parcour = res.data.titre;
-      this.commune = res.data.commune;
-      this.etapes = res.etapes;
-      this.etapes.sort((a, b) => a.etape.ordre - b.etape.ordre);
-    });
+  async mounted() {
+    await this.getParcours()
   },
   setup() {
     const store = useStore()
@@ -117,19 +161,18 @@ export default {
     if (!(user.value.loggedIn)) {
       this.$router.push('/login')
     }
-    return { user, mdiEyeOutline, mdiDeleteOutline, draggable }
+    return { user, mdiEyeOutline, mdiDeleteOutline, draggable, mdiPencilOutline }
   }
 };
 </script>
 
 <style scoped>
-
-
 v-row {
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
+
 .btn {
   display: block;
   margin-left: auto;
@@ -138,7 +181,7 @@ v-row {
 }
 
 .parcours {
-  cursor:pointer;
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   background-color: white;

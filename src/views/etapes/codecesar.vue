@@ -7,62 +7,70 @@
     <v-row align="start">
       <v-col>
         <h3 align="center"> Paramètres du jeu</h3>
-        <v-textarea label="Nom du jeu" rows="1" variant="outlined" no-resize autofocus required v-model="titre"></v-textarea>
+        <v-textarea label="Nom du jeu" rows="1" variant="outlined" no-resize autofocus required
+          v-model="titre"></v-textarea>
         <br>
         <v-textarea label="Question (indice)" rows="2" no-resize required v-model="question"></v-textarea>
         <br>
-        <v-textarea label="Texte à coder" rows="1" no-resize required v-model="texteBrut"></v-textarea>
+        <v-textarea label="Texte à coder" rows="1" no-resize required
+          @change="previsualisation = cesar(texteBrut, decalage)" v-model="texteBrut"></v-textarea>
         <br>
-        <v-text-field label="Décalage" type="number" class="selectDecalage" no-resize required v-model="decalage" />
+        <v-text-field label="Décalage" type="number" class="selectDecalage" no-resize required
+          @change="previsualisation = cesar(texteBrut, decalage)" v-model="decalage" />
         <br>
+        <v-text-field disabled label="prévisualisation" no-resize required v-model="previsualisation" />
+        <br>
+        <v-slider step="5" thumb-label="always" :min="0" :max="100" v-model="poids"></v-slider>
       </v-col>
       <v-col>
         <h3 align="center"> Affichage après réponse</h3>
-        <v-textarea label="Titre si mauvaise réponse" rows="1" no-resize required v-model="titreMauvaiseReponse"></v-textarea>
+        <v-textarea label="Titre si mauvaise réponse" rows="1" no-resize required
+          v-model="titreMauvaiseReponse"></v-textarea>
         <br>
         <v-textarea label="Titre si bonne réponse" rows="1" no-resize required v-model="titreBonneReponse"></v-textarea>
         <br>
-        <v-textarea  label="Texte après la réponse" rows="4" required auto-grow v-model="texteApresReponse" />
+        <v-textarea label="Texte après la réponse" rows="4" required auto-grow v-model="texteApresReponse" />
         <br>
       </v-col>
       <v-col>
         <div align="center">
-            <h3 align="center">Ajouter une image</h3>
-            <label for="file">
-              <svg-icon class="iconImage" type="mdi" :path="mdiPlus" :size="40"></svg-icon>
-            </label>
-            <input @change="uploadNewImage" class="inputfile" type="file" name="file" id="file" accept="image/*" />
-            <v-dialog transition="dialog-bottom-transition" width="auto">
-              <template v-slot:activator="{ props }">
-                <svg-icon v-bind="props" class="iconImage" type="mdi" :path="mdiMagnify" :size="40"></svg-icon>
-              </template>
-              <template v-slot:default="{ isActive }">
-                <v-card>
-                  <v-toolbar color="green">
-                    <div>
-                      <form action="#" @submit.prevent="searchSpecies()">
-                        <input placeholder="Rechercher une espèce" v-model="espece" required autofocus />
-                        <input type="submit" hidden />
-                      </form>
-                    </div>
-                  </v-toolbar>
-                  <div class="container">
-                    <div class="card" v-for="espece in especes" v-bind:key="espece" @click="select(espece)">
-                      <img v-if="espece.selected" class="img-selected" :src="espece._links.file.href">
-                      <img v-else class="img" :src="espece._links.file.href">
-                    </div>
+          <h3 align="center">Ajouter une image</h3>
+          <label for="file">
+            <svg-icon class="iconImage" type="mdi" :path="mdiPlus" :size="40"></svg-icon>
+          </label>
+          <input @change="uploadNewImage" class="inputfile" type="file" name="file" id="file" accept="image/*" />
+          <v-dialog transition="dialog-bottom-transition" width="auto">
+            <template v-slot:activator="{ props }">
+              <svg-icon v-bind="props" class="iconImage" type="mdi" :path="mdiMagnify" :size="40"></svg-icon>
+            </template>
+            <template v-slot:default="{ isActive }">
+              <v-card>
+                <v-toolbar color="green">
+                  <div>
+                    <form action="#" @submit.prevent="searchSpecies()">
+                      <input placeholder="Rechercher une espèce" v-model="espece" required autofocus />
+                      <input type="submit" hidden />
+                    </form>
                   </div>
-                  <v-card-actions class="justify-end">
-                    <v-btn variant="text" @click="isActive.value = false">Fermer</v-btn>
-                    <v-btn v-if="imagepicked" variant="text" @click="isActive.value = false, validate()">Choisir image</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </template>
-            </v-dialog>
-            <br>
-            <div v-if="image || bytesarray">Prévisualisation de l'image</div>
-            <img v-if="image" class="preview" :src="image" />
-            <img v-else class="preview" id="addedimage" />
+                </v-toolbar>
+                <div class="container">
+                  <div class="card" v-for="espece in especes" v-bind:key="espece" @click="select(espece)">
+                    <img v-if="espece.selected" class="img-selected" :src="espece._links.file.href">
+                    <img v-else class="img" :src="espece._links.file.href">
+                  </div>
+                </div>
+                <v-card-actions class="justify-end">
+                  <v-btn variant="text" @click="isActive.value = false">Fermer</v-btn>
+                  <v-btn v-if="imagepicked" variant="text" @click="isActive.value = false, validate()">Choisir
+                    image</v-btn>
+                </v-card-actions>
+              </v-card>
+            </template>
+          </v-dialog>
+          <br>
+          <div v-if="image || bytesarray">Prévisualisation de l'image</div>
+          <img v-if="image" class="preview" :src="image" />
+          <img v-else class="preview" id="addedimage" />
         </div>
       </v-col>
     </v-row>
@@ -70,7 +78,8 @@
     <div class="precedent">
       <button @click="createEtape()" type="submit" width="100%" class="btn greenbtn">Créer Etape</button>
       <br>
-      <router-link custom v-slot="{ navigate }" :to="'/createetapeinparcours/' + $router.currentRoute.value.params.parcours">
+      <router-link custom v-slot="{ navigate }"
+        :to="'/createetapeinparcours/' + $router.currentRoute.value.params.parcours">
         <button @click="navigate" role="link" class="routerLink btn orangebtn">Retour</button>
       </router-link>
     </div>
@@ -95,6 +104,7 @@ export default {
   name: "cesarComponent",
   data() {
     return {
+      previsualisation: '',
       image: '',
       bytesarray: '',
       id: '',
@@ -108,7 +118,8 @@ export default {
       decalage: 0,
       especes: [],
       espece: '',
-      parcour: {}
+      parcour: {},
+      poids: 0
     }
   },
   methods: {
@@ -156,26 +167,54 @@ export default {
       }
     },
     async createEtape() {
-      var cesar = new JeuCesar(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.question, this.texteBrut, this.decalage, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse)
+      var cesar = new JeuCesar(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.question, this.texteBrut, this.decalage, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse, this.poids)
       try {
-        const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,cesar.generateFirestoreData())
+        const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours, cesar.generateFirestoreData())
         if (this.image != '') {
-            const response = await fetch(this.image);
-            const arrayBuffer = await response.arrayBuffer();
-            const byteArray = new Uint8Array(arrayBuffer);
-            await uploadImage(byteArray, "image_etape", id, this.$router.currentRoute.value.params.parcours )
+          const response = await fetch(this.image);
+          const arrayBuffer = await response.arrayBuffer();
+          const byteArray = new Uint8Array(arrayBuffer);
+          await uploadImage(byteArray, "image_etape", id, this.$router.currentRoute.value.params.parcours)
         } else {
           if (this.bytesarray) {
-              await uploadImage(this.bytesarray, "image_etape",id, this.$router.currentRoute.value.params.parcours)          
+            await uploadImage(this.bytesarray, "image_etape", id, this.$router.currentRoute.value.params.parcours)
           }
         }
       }
-      catch(err) {
+      catch (err) {
         console.log(err)
         alert("Erreur pendant le téléchargement de l'image, l'image est peut-être trop grande (max : 2Mo)")
       }
 
       this.$router.push('/editetapes/' + this.$router.currentRoute.value.params.parcours)
+    },
+    cesar(str, decalage) {
+      // Vérifier si le décalage est en dehors de la plage valide
+      if (decalage < -25 || decalage > 25) {
+        throw new Error('Le décalage doit être compris entre -25 et 25.');
+      }
+      // Convertir le décalage en valeur positive équivalente
+      decalage = ((decalage % 26) + 26) % 26;
+      // Convertir la chaîne en tableau de caractères
+      var chars = str.split('');
+      // Parcourir chaque caractère et effectuer le décalage
+      for (var i = 0; i < chars.length; i++) {
+        var char = chars[i];
+        // Vérifier si le caractère est une lettre minuscule
+        if (char.match(/[a-z]/i)) {
+          // Convertir le caractère en code ASCII
+          var code = str.charCodeAt(i);
+          // Appliquer le décalage au code ASCII
+          if (code >= 97 && code <= 122) {
+            code = ((code - 97 + decalage) % 26) + 97;
+          }
+          // Convertir le code ASCII décalé en caractère
+          chars[i] = String.fromCharCode(code);
+        }
+      }
+      // Rejoindre les caractères décalés pour former la chaîne de caractères finale
+      var result = chars.join('');
+      return result;
     }
   },
 
@@ -229,6 +268,7 @@ export default {
   width: 200px;
   border: 5px solid #76B828;
 }
+
 .container {
   display: grid;
   column-gap: 20px;
@@ -239,7 +279,7 @@ export default {
 }
 
 .selectDecalage {
-  width:30%;
+  width: 30%;
 }
 
 .inputfile {
@@ -258,5 +298,4 @@ export default {
   background-color: black;
   display: inline-block;
 }
-
 </style>

@@ -13,6 +13,7 @@
         <br>
         <v-text-field label="Résultat calcul" type="number" class="selectNumber" no-resize required v-model="resultat" />
         <br>
+        <v-slider step="5" thumb-label="always" :min="0" :max="100" v-model="poids"></v-slider>
       </v-col>
       <v-col>
           <h3 align="center"> Affichage après réponse</h3>
@@ -105,7 +106,8 @@ export default {
       resultat: 0,
       especes: [],
       espece: '',
-      parcour: {}
+      parcour: {},
+      poids: 0
     }
   },
   methods: {
@@ -153,7 +155,7 @@ export default {
       }
     },
     async createEtape() {
-      var pyramide = new JeuPyramide(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.question, this.resultat, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse)
+      var pyramide = new JeuPyramide(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.question, this.resultat, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse, this.poids)
       try {
         const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,pyramide.generateFirestoreData())
         if (this.image != '') {

@@ -42,7 +42,7 @@ export default {
           email: email.value,
           password: password.value
         })
-        router.push('/')
+        router.push('/gestioncommune')
       }
       catch (err) {
         error.value = err.message
@@ -74,6 +74,7 @@ export default {
   display: block;
   margin-left: auto;
   margin-right: auto;
+  width: 50%;
 }
 .btn {
   display: block;

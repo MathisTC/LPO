@@ -11,6 +11,8 @@
         <br>
         <v-textarea label="Question" rows="2" no-resize required v-model="question"></v-textarea>
         <br>
+        <v-slider step="5" thumb-label="always" :min="0" :max="100" v-model="poids"></v-slider>
+        <br>
         <h4 align="center"> Affichage après réponse</h4>
         <v-textarea label="Titre si mauvaise réponse" rows="1" no-resize required v-model="titreMauvaiseReponse"></v-textarea>
         <br>
@@ -234,7 +236,8 @@ export default {
       especes: [],
       espece: '',
       parcour: {},
-      especesselected: []
+      especesselected: [],
+      poids: 0
     }
   },
   methods: {
@@ -281,7 +284,7 @@ export default {
       }
     },
     async createEtape() {
-      var intru = new JeuIntrus(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, this.question, ['','','',''], this.radio, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse)
+      var intru = new JeuIntrus(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, this.question, ['','','',''], this.radio, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse, this.poids)
       var byteArray_tab = ['','','','']
       try {
         const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours, intru.generateFirestoreData())
@@ -304,6 +307,7 @@ export default {
       catch (err) {
         console.log(err)
         alert("Erreur pendant le téléchargement d'une des images, l'image est peut-être trop grande (max : 2Mo)")
+        return
       }
 
       this.$router.push('/editetapes/' + this.$router.currentRoute.value.params.parcours)

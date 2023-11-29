@@ -133,6 +133,7 @@ export async function getParcoursContents(id) {
         const gameInfo = 
         {
           id: queryDocumentSnapshot.id,
+          brouillon: queryDocumentSnapshot.brouillon,
           etape: queryDocumentSnapshot.data()
         }
   
@@ -162,7 +163,8 @@ export async function createParcours(p_obj){
         description: p_obj.description,
         difficulte: p_obj.difficulte,
         duree: p_obj.duree,
-        image_url: p_obj.image_url !== "" ? p_obj.image_url : ""
+        image_url: p_obj.image_url !== "" ? p_obj.image_url : "",
+        brouillon: true
     });
    
     // Retourne le doc id autogénéré
@@ -180,6 +182,17 @@ export async function modifyParcours(id, p_obj){
     await updateDoc(parcoursRef,  p_obj);
 
 }
+
+export async function setBrouillon(id, state){
+  // Récupération de la référence du document que l'on souhaite modifier
+  const parcoursRef = doc(db, "parcours", id);
+  // Mise à jour des champs du document avec le nouveau p_obj
+  await updateDoc(parcoursRef,  {
+    brouillon: state
+  })
+}
+
+
 
 // Méthode d'écriture qui met à jour uniquement le champs 'image_url' d'un parcours avec l'url passée en paramètre
 // Cette méthode est appelée une fois qu'une image a été upload sur "Storage" et que l'on a obtenu l'url de téléchargement
@@ -276,7 +289,6 @@ export async function validateEtapesInParcours(id_parcours, data_etapes){
 // Méthode d'écriture qui va modifier l'étape d'un parcours avec les nouvelles data
 // REMARQUE : Cette méthode n'a pas pu être implémenté dans le FRONT !!!
 export async function modifyEtapeInParcours(id_parcours, id_etape, data){
-
   const etapeRef = doc(db, "parcours", id_parcours, "etape", id_etape);
 
   await updateDoc(etapeRef, data);

@@ -29,6 +29,8 @@
             <v-textarea label="Réponse 4" rows="1" class="label" no-resize required v-model="reponses[3]"></v-textarea>
           </v-row>
         </div>
+        <br>
+        <v-slider step="5" thumb-label="always" :min="0" :max="100" v-model="poids"></v-slider>
       </v-col>
       <v-col>
         <h3 align="center"> Affichage après réponse</h3>
@@ -122,10 +124,10 @@ export default {
       decalage: 0,
       especes: [],
       espece: '',
-      parcour: {},
+      parcours: {},
       reponses: [],
-      radio: 0
-
+      radio: 0,
+      poids: 0
     }
   },
   methods: {
@@ -173,7 +175,7 @@ export default {
       }
     },
     async createEtape() {
-      var qcm = new JeuQCM(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.texte, this.reponses, this.radio, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse)
+      var qcm = new JeuQCM(JSON.parse(JSON.stringify(this.parcours)).etapes.length + 1, this.titre, '', this.texte, this.reponses, this.radio, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse, this.poids)
       try {
         const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,qcm.generateFirestoreData())
         if (this.image != '') {
@@ -197,7 +199,7 @@ export default {
 
   mounted() {
     getParcoursContents(this.$router.currentRoute.value.params.parcours).then((res) => {
-      this.parcour = res
+      this.parcours = res
     });
   },
   setup() {

@@ -28,7 +28,7 @@ un objet qui sera écrit dans une sous-collection 'étape' d'un parcours donné 
 et spécifique de l'étape en question.
 */
 class Etape {
-    constructor(ordre, type, nom, image_url) {
+    constructor(ordre, type, nom, image_url, poids) {
       this.ordre = ordre;
       if (Object.values(TypeEtape).includes(type)) {
         this.type = type;
@@ -37,6 +37,7 @@ class Etape {
       }
       this.nom = nom;
       this.image_url = image_url;
+      this.poids = poids;
     }
   
     generateFirestoreData() { /*NEED TO BE OVERRIDE IN CHILDREN CLASS BELOW vvvv*/ }
@@ -49,9 +50,9 @@ class Etape {
 
 // eslint-disable-next-line no-unused-vars
 class JeuInfo extends Etape {
-    constructor(ordre, nom, image_url, texte){
+    constructor(ordre, nom, image_url, texte, poids){
         // Commun attributes
-        super(ordre, TypeEtape.jeu_info, nom, image_url);
+        super(ordre, TypeEtape.jeu_info, nom, image_url, poids);
 
         // Specific attributes
         this.texte = texte;
@@ -63,7 +64,8 @@ class JeuInfo extends Etape {
             type: this.type,
             nom: this.nom,
             image_url: this.image_url,
-            texte: this.texte
+            texte: this.texte,
+            poids: this.poids
         }
         return data;
     }
@@ -71,8 +73,8 @@ class JeuInfo extends Etape {
 
 // eslint-disable-next-line no-unused-vars
 class JeuBlague extends Etape {
-    constructor(ordre, nom, image_url, texte){
-        super(ordre, TypeEtape.jeu_blague, nom, image_url);
+    constructor(ordre, nom, image_url, texte, poids){
+        super(ordre, TypeEtape.jeu_blague, nom, image_url, poids);
         this.texte = texte;
     }
 
@@ -82,7 +84,8 @@ class JeuBlague extends Etape {
             type: this.type,
             nom: this.nom,
             image_url: this.image_url,
-            texte: this.texte
+            texte: this.texte,
+            poids: this.poids
         }
         return data;
     }
@@ -90,9 +93,9 @@ class JeuBlague extends Etape {
 
 // eslint-disable-next-line no-unused-vars
 class JeuQCM extends Etape {
-    constructor(ordre, nom, image_url, question, reponses_tab, index_bonneReponse, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse) {
+    constructor(ordre, nom, image_url, question, reponses_tab, index_bonneReponse, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse, poids) {
         // Commun attributes
-        super(ordre, TypeEtape.jeu_qcm, nom, image_url);
+        super(ordre, TypeEtape.jeu_qcm, nom, image_url, poids);
 
         // Specific attributes
         this.question = question;
@@ -117,6 +120,7 @@ class JeuQCM extends Etape {
                 this.reponses_tab[2],
                 this.reponses_tab[3]
             ],
+            poids: this.poids,
             index_bonneReponse: this.index_bonneReponse,
             titreSiBonneReponse: this.titreSiBonneReponse,
             titreSiMauvaiseReponse: this.titreSiMauvaiseReponse,
@@ -129,9 +133,9 @@ class JeuQCM extends Etape {
 
 // eslint-disable-next-line no-unused-vars
 class JeuIntrus extends Etape {
-    constructor(ordre, nom, question, images_tab, index_bonneReponse, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse) {
+    constructor(ordre, nom, question, images_tab, index_bonneReponse, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse, poids) {
         // Commun attributes
-        super(ordre, TypeEtape.jeu_intrus, nom, '');
+        super(ordre, TypeEtape.jeu_intrus, nom, '', poids);
 
         // Specific attributes
         this.question = question;
@@ -158,7 +162,8 @@ class JeuIntrus extends Etape {
             index_bonneReponse: this.index_bonneReponse,
             titreSiBonneReponse: this.titreSiBonneReponse,
             titreSiMauvaiseReponse: this.titreSiMauvaiseReponse,
-            texteApresReponse: this.texteApresReponse
+            texteApresReponse: this.texteApresReponse,
+            poids: this.poids
         }
 
         return data;
@@ -167,9 +172,9 @@ class JeuIntrus extends Etape {
 
 // eslint-disable-next-line no-unused-vars
 class JeuCesar extends Etape {
-    constructor(ordre, nom, image_url, question, texteBrut, decalage, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse) {
+    constructor(ordre, nom, image_url, question, texteBrut, decalage, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse, poids) {
         // Commun attributes
-        super(ordre, TypeEtape.jeu_cesar, nom, image_url);
+        super(ordre, TypeEtape.jeu_cesar, nom, image_url, poids);
 
         // Specific attributes
         this.question = question;
@@ -191,7 +196,8 @@ class JeuCesar extends Etape {
             decalage: this.decalage,
             titreSiBonneReponse: this.titreSiBonneReponse,
             titreSiMauvaiseReponse: this.titreSiMauvaiseReponse,
-            texteApresReponse: this.texteApresReponse
+            texteApresReponse: this.texteApresReponse,
+            poids: this.poids
         }
         return data;
     }
@@ -199,9 +205,9 @@ class JeuCesar extends Etape {
 
 // eslint-disable-next-line no-unused-vars
 class JeuPyramide extends Etape {
-    constructor(ordre, nom, image_url, question, nombre, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse) {
+    constructor(ordre, nom, image_url, question, nombre, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse, poids) {
         // Commun attributes
-        super(ordre, TypeEtape.jeu_pyramide, nom, image_url);
+        super(ordre, TypeEtape.jeu_pyramide, nom, image_url, poids);
 
         // Specific attributes
         this.question = question;
@@ -221,7 +227,8 @@ class JeuPyramide extends Etape {
             nombre: this.nombre,
             titreSiBonneReponse: this.titreSiBonneReponse,
             titreSiMauvaiseReponse: this.titreSiMauvaiseReponse,
-            texteApresReponse: this.texteApresReponse
+            texteApresReponse: this.texteApresReponse,
+            poids: this.poids
         }
 
         return data;
@@ -230,9 +237,9 @@ class JeuPyramide extends Etape {
 
 // eslint-disable-next-line no-unused-vars
 class JeuCode extends Etape {
-    constructor(ordre, nom, image_url, texte, code){
+    constructor(ordre, nom, image_url, texte, code, poids){
         // Commun attributes
-        super(ordre, TypeEtape.jeu_code, nom, image_url);
+        super(ordre, TypeEtape.jeu_code, nom, image_url, poids);
 
         // Specific attributes
         this.texte = texte;
@@ -246,7 +253,8 @@ class JeuCode extends Etape {
             nom: this.nom,
             image_url: this.image_url,
             texte: this.texte,
-            code: this.code
+            code: this.code,
+            poids: this.poids
         }
         return data;
     }
@@ -254,9 +262,9 @@ class JeuCode extends Etape {
 
 // eslint-disable-next-line no-unused-vars
 class JeuCharade extends Etape {
-    constructor(ordre, nom, image_url, charade, reponse, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse){
+    constructor(ordre, nom, image_url, charade, reponse, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse, poids){
         // Commun attributes
-        super(ordre, TypeEtape.jeu_charade, nom, image_url);
+        super(ordre, TypeEtape.jeu_charade, nom, image_url, poids);
 
         // Specific attributes
         this.charade = charade;
@@ -276,7 +284,8 @@ class JeuCharade extends Etape {
             reponse: this.reponse,
             titreSiBonneReponse: this.titreSiBonneReponse,
             titreSiMauvaiseReponse: this.titreSiMauvaiseReponse,
-            texteApresReponse: this.texteApresReponse
+            texteApresReponse: this.texteApresReponse,
+            poids: this.poids
         }
         return data;
     }
@@ -284,9 +293,9 @@ class JeuCharade extends Etape {
 
 // eslint-disable-next-line no-unused-vars
 class JeuCompterImage extends Etape {
-    constructor(ordre, nom, image_url, texte, reponse, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse){
+    constructor(ordre, nom, image_url, texte, reponse, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse, poids){
         // Commun attributes
-        super(ordre, TypeEtape.jeu_compterimage, nom, image_url);
+        super(ordre, TypeEtape.jeu_compterimage, nom, image_url, poids);
 
         // Specific attributes
         this.texte = texte;
@@ -306,7 +315,8 @@ class JeuCompterImage extends Etape {
             reponse: this.reponse,
             titreSiBonneReponse: this.titreSiBonneReponse,
             titreSiMauvaiseReponse: this.titreSiMauvaiseReponse,
-            texteApresReponse: this.texteApresReponse
+            texteApresReponse: this.texteApresReponse,
+            poids: this.poids
         }
         return data;
     }
@@ -314,9 +324,9 @@ class JeuCompterImage extends Etape {
 
 // eslint-disable-next-line no-unused-vars
 class JeuRebus extends Etape {
-    constructor(ordre, nom, image_url, question, reponse, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse){
+    constructor(ordre, nom, image_url, question, reponse, titreSiBonneReponse, titreSiMauvaiseReponse, texteApresReponse, poids){
         // Commun attributes
-        super(ordre, TypeEtape.jeu_rebus, nom, image_url);
+        super(ordre, TypeEtape.jeu_rebus, nom, image_url, poids);
 
         // Specific attributes
         this.question = question;
@@ -336,7 +346,8 @@ class JeuRebus extends Etape {
             reponse: this.reponse,
             titreSiBonneReponse: this.titreSiBonneReponse,
             titreSiMauvaiseReponse: this.titreSiMauvaiseReponse,
-            texteApresReponse: this.texteApresReponse
+            texteApresReponse: this.texteApresReponse,
+            poids: this.poids
         }
         return data;
     }
@@ -344,8 +355,8 @@ class JeuRebus extends Etape {
 
 // eslint-disable-next-line no-unused-vars
 class JeuEcogeste extends Etape {
-    constructor(ordre, nom, image_url, texte){
-        super(ordre, TypeEtape.jeu_ecogeste, nom, image_url);
+    constructor(ordre, nom, image_url, texte, poids){
+        super(ordre, TypeEtape.jeu_ecogeste, nom, image_url, poids);
         this.texte = texte;
     }
 
@@ -355,7 +366,8 @@ class JeuEcogeste extends Etape {
             type: this.type,
             nom: this.nom,
             image_url: this.image_url,
-            texte: this.texte
+            texte: this.texte,
+            poids: this.poids
         }
         return data;
     }
@@ -363,9 +375,9 @@ class JeuEcogeste extends Etape {
 
 // eslint-disable-next-line no-unused-vars
 class TransiInfo extends Etape {
-    constructor(ordre, nom, image_url, texte){
+    constructor(ordre, nom, image_url, texte, poids){
         // Commun attributes
-        super(ordre, TypeEtape.transi_info, nom, image_url);
+        super(ordre, TypeEtape.transi_info, nom, image_url, poids);
 
         // Specific attributes
         this.texte = texte;
@@ -377,7 +389,8 @@ class TransiInfo extends Etape {
             type: this.type,
             nom: this.nom,
             image_url: this.image_url,
-            texte: this.texte
+            texte: this.texte,
+            poids: this.poids
         }
 
         return data;
@@ -386,9 +399,9 @@ class TransiInfo extends Etape {
 
 // eslint-disable-next-line no-unused-vars
 class TransiGPS extends Etape {
-    constructor(ordre, nom, image_url, texte, latitude, longitude){
+    constructor(ordre, nom, image_url, texte, latitude, longitude, poids){
         //Commun attributes
-        super(ordre, TypeEtape.transi_gps, nom, image_url);
+        super(ordre, TypeEtape.transi_gps, nom, image_url, poids);
         
         //Specific attributes
         this.texte = texte;
@@ -404,7 +417,8 @@ class TransiGPS extends Etape {
             image_url: this.image_url,
             texte: this.texte,
             latitude: this.latitude,
-            longitude: this.longitude
+            longitude: this.longitude,
+            poids: this.poids
         }
 
         return data;
