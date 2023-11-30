@@ -1,16 +1,3 @@
-<script setup>
-import ImagePicker from '../../components/ImagePicker.vue'
-const store = useStore()
-auth.onAuthStateChanged(user => {
-  store.dispatch("fetchUser", user);
-});
-const user = computed(() => {
-  return store.getters.user;
-});
-if (!(user.value.loggedIn)) {
-  this.$router.push('/login')
-}
-</script>
 <template>
   <div v-if="user.loggedIn">
     <div class="center-div">
@@ -61,7 +48,9 @@ import { computed } from "vue";
 import { auth } from '../../firebaseConfig'
 import { createParcours } from '../../utils/queries.js'
 import { uploadImage } from '../../utils/UploadImage.js'
+import ImagePicker from '../../components/ImagePicker.vue'
 export default {
+  components: { ImagePicker },
   name: "CreateParcoursInCommune",
   data() {
     return {
@@ -114,8 +103,18 @@ export default {
     this.commune = this.$router.currentRoute.value.params.commune;
   },
   setup() {
-
-  },
+    const store = useStore()
+    auth.onAuthStateChanged(user => {
+      store.dispatch("fetchUser", user);
+    });
+    const user = computed(() => {
+      return store.getters.user;
+    });
+    if (!(user.value.loggedIn)) {
+      this.$router.push('/')
+    }
+    return { user }
+  }
 };
 </script>
 

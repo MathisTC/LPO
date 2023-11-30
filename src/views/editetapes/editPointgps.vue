@@ -1,17 +1,3 @@
-<script setup>
-import ImagePicker from '../../components/ImagePicker.vue'
-const store = useStore()
-auth.onAuthStateChanged(user => {
-  store.dispatch("fetchUser", user);
-});
-const user = computed(() => {
-  return store.getters.user;
-});
-if (!(user.value.loggedIn)) {
-  this.$router.push('/login')
-}
-</script>
-
 <template>
   <div v-if="user.loggedIn" class="center-div">
     <h2 align="center">
@@ -71,10 +57,11 @@ import { uploadImage } from '../../utils/UploadImage.js'
 import { modifyEtapeInParcours } from '../../utils/queries.js'
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LMarker  } from "@vue-leaflet/vue-leaflet";
+import ImagePicker from '../../components/ImagePicker.vue'
 export default {
   name: "editPointGPS",
   components: {
-    LMap, LTileLayer, LMarker 
+    LMap, LTileLayer, LMarker, ImagePicker
   },
   data() {
     return {
@@ -134,10 +121,22 @@ export default {
       })
     }
   },
-
   async mounted() {
     await this.getInfos()
   },
+  setup() {
+    const store = useStore()
+    auth.onAuthStateChanged(user => {
+      store.dispatch("fetchUser", user);
+    });
+    const user = computed(() => {
+      return store.getters.user;
+    });
+    if (!(user.value.loggedIn)) {
+      this.$router.push('/')
+    }
+    return { user }
+  }
 };
 </script>
 <style scoped>

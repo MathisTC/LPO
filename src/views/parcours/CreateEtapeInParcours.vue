@@ -53,7 +53,7 @@ export default {
       return store.getters.user;
     });
     if (!(user.value.loggedIn)) {
-      router.push('/login')
+      router.push('/')
     }
     return { user }
   },

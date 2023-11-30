@@ -22,18 +22,21 @@
     <p align="center">Pour changer l'ordre des étapes, glisser les différentes étapes puis cliquer sur le bouton valider
     </p>
     <draggable v-model="etapes" tag="ul" itemKey="id" ghost-class="ghost" :animation="300">
-
+      
       <template #item="{ element: etape }">
+        
 
         <div class="parcours">
-          <div>{{ etape.etape.type + ": " + etape.etape.nom }} </div>
-          <div>
-            <svg-icon @click="EditEtape(etape)" class="iconEditDelete" type="mdi" :path="mdiPencilOutline" :size="20">
-            </svg-icon>
-            <svg-icon @click="ViewEtape(etape)" class="iconEditDelete" type="mdi" :path="mdiEyeOutline" :size="20">
-            </svg-icon>
-            <svg-icon @click="DeleteEtape(etape)" class="iconEditDelete" type="mdi" :path="mdiDeleteOutline"
-              :size="20"></svg-icon>
+          <div>{{ etape.etape.type + " : " + etape.etape.nom }} </div>
+          <div class="buttons">
+            <input v-model="etape.etape.poids" @input="updateEtape($route.params.parcour, etape.id, etape.etape.poids)" @change="getEtapes()">
+            <div>
+              <svg-icon @click="EditEtape(etape)" class="iconEditDelete" type="mdi" :path="mdiPencilOutline" :size="20">
+              </svg-icon>
+              <svg-icon @click="ViewEtape(etape)" class="iconEditDelete" type="mdi" :path="mdiEyeOutline" :size="20">
+              </svg-icon>
+              <svg-icon @click="DeleteEtape(etape)" class="iconEditDelete" type="mdi" :path="mdiDeleteOutline" :size="20"></svg-icon>
+            </div>
           </div>
         </div>
       </template>
@@ -67,16 +70,18 @@ import { mdiDeleteOutline } from '@mdi/js';
 import { auth } from '../../firebaseConfig'
 import { getParcoursContents, validateEtapesInParcours, deleteEtapeInParcours, setBrouillon } from '../../utils/queries.js'
 import draggable from 'vuedraggable';
-
+import { modifyEtapeInParcours } from '../../utils/queries'
 
 export default {
   name: "EditeEtapesComponent",
+  poidsTotal: 0,
+
   data() {
     return {
       parcour: '_',
       etapes: [],
       commune: '_',
-      brouillon: Boolean
+      brouillon: Boolean,
     }
   },
   methods: {
@@ -91,10 +96,18 @@ export default {
           parcours: this.parcour,
           etapes: JSON.stringify(this.etapes),
           ordre: etape.etape.ordre
+
         }
       })
     },
 
+    // Met à jour le poids de chaque étape
+    updateEtape(id_parcours, id_etape, poids) {
+      var p_obj = {
+        poids: poids
+      }
+      modifyEtapeInParcours(id_parcours, id_etape, p_obj)
+    },
     EditEtape(etape) {
       if (etape.id != this.etapes[etape.etape.ordre - 1].id) {
         validateEtapesInParcours(this.$router.currentRoute.value.params.parcour, JSON.parse(JSON.stringify(this.etapes)))
@@ -125,6 +138,27 @@ export default {
           }
         }
       }
+    },
+    getEtapes() {
+
+      if (this.etapes[this.etapes.length-1].etape.poids < 100){
+        window.alert("La progression n'est pas complète, veuillez réessayer")   
+      }
+      //console.log(this.$router.currentRoute.value.params.parcour.nom)      
+    },
+    isSorted() {
+      let tab = []
+      for (let i = 0; i < this.etapes.length; i++) {
+        tab.push(this.etapes[i].etape.poids)
+        console.log("comp ",this.etapes[i].etape.poids > this.etapes[i+1].etape.poids)
+      }
+      for (let i = 0; i < this.etapes.length; i++) {
+        if (tab[i] > tab[i+1]) {
+          return false
+         // Si un élément est plus grand que l'élément suivant, la liste n'est pas ordonnée
+        }
+      }
+      return true; // Si aucun élément n'est plus grand que l'élément suivant, la liste est ordonnée
     },
     async hideParcours(parcoursId) {
       await setBrouillon(parcoursId, true).then(() => {
@@ -198,5 +232,20 @@ v-row {
 .ghost {
   opacity: 0.5;
   background: #c8ebfb;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+}
+
+input {
+  width: 40px;
+  height: 30px;
+  background-color: rgb(235, 235, 235);
+  border-radius: 5px;
+  padding: 5px;
+  text-align: center;
+  font-size: .9em;
 }
 </style>

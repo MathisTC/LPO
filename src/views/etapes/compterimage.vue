@@ -194,7 +194,7 @@
         return store.getters.user;
       });
       if (!(user.value.loggedIn)) {
-        this.$router.push('/login')
+        this.$router.push('/')
       }
       return { user, mdiMagnify, mdiPlus }
     }

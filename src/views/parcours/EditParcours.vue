@@ -1,16 +1,3 @@
-<script setup>
-import ImagePicker from '../../components/ImagePicker.vue'
-const store = useStore()
-auth.onAuthStateChanged(user => {
-  store.dispatch("fetchUser", user);
-});
-const user = computed(() => {
-  return store.getters.user;
-});
-if (!(user.value.loggedIn)) {
-  this.$router.push('/login')
-}
-</script>
 <template>
   <div v-if="user.loggedIn">
     <div class="center-div">
@@ -63,7 +50,9 @@ import { getParcoursContents, modifyParcours } from '../../utils/queries.js'
 import { uploadImage } from '../../utils/UploadImage.js'
 import { mdiMagnify } from '@mdi/js';
 import { mdiPlus } from '@mdi/js';
+import ImagePicker from '../../components/ImagePicker.vue'
 export default {
+  components: { ImagePicker },
   name: "EditParcours",
   data(){
     return {
@@ -147,7 +136,7 @@ export default {
       return store.getters.user;
     });
     if (!(user.value.loggedIn)) {
-      this.$router.push('/login')
+      this.$router.push('/')
     }
     return { user, mdiMagnify, mdiPlus}
   }

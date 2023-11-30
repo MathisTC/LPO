@@ -55,11 +55,11 @@ export default {
       return store.getters.user;
     });
     if (!(user.value.loggedIn)) {
-      router.push('/login')
+      router.push('/')
     }
     const signOut = async () => {
       await store.dispatch('logOut')
-      router.push('/login')
+      router.push('/')
     }
     const EditCommune = async () => {
       if (commune.value != null && commune.value != '') {

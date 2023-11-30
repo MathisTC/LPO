@@ -1,7 +1,3 @@
-<script setup>
-import { mdiMagnify, mdiPlus } from '@mdi/js';
-</script>
-
 <template>
   <div align="center" >
     <h3 v-if="doNotDisplayTitle !== true" align="center"> Choisir une image </h3>
@@ -9,7 +5,7 @@ import { mdiMagnify, mdiPlus } from '@mdi/js';
       <svg-icon class="iconImage" type="mdi" :path="mdiPlus" :size="40"></svg-icon>
     </label>
     <input @change="uploadNewImage" class="inputfile" type="file" name="file" :id="'file' + number" accept="image/*" />
-    <v-dialog transition="dialog-bottom-transition"  width="50%">
+    <v-dialog transition="dialog-bottom-transition"  width="800px">
       <template v-slot:activator="{ props }">
         <svg-icon v-bind="props" class="iconImage" type="mdi" :path="mdiMagnify" :size="40"></svg-icon>
       </template>
@@ -46,6 +42,7 @@ import { mdiMagnify, mdiPlus } from '@mdi/js';
 
 
 <script>
+import { mdiMagnify, mdiPlus } from '@mdi/js';
 export default {
   name: "ImagePicker",
 
@@ -116,6 +113,9 @@ export default {
         }
       }
     },
+  },
+  setup() {
+    return { mdiMagnify, mdiPlus}
   }
 }
 </script>

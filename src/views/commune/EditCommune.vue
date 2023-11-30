@@ -20,7 +20,7 @@
     <button @click="InformationCommune($route.params.commune)" class="btn bluebtn">Données espèces
     </button><br>
     <div class="precedent">
-        <router-link custom v-slot="{ navigate }" to="/">
+        <router-link custom v-slot="{ navigate }" to="/gestioncommune">
           <button @click="navigate" role="link" class="routerLink btn orangebtn">Retour</button>
         </router-link>
     </div>
@@ -89,7 +89,7 @@ export default {
       return store.getters.user;
     });
     if (!(user.value.loggedIn)) {
-      router.push('/login')
+      router.push('/')
     }
 
 

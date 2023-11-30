@@ -1,21 +1,7 @@
-<script setup>
-import ImagePicker from '../../components/ImagePicker.vue'
-const store = useStore()
-auth.onAuthStateChanged(user => {
-  store.dispatch("fetchUser", user);
-});
-const user = computed(() => {
-  return store.getters.user;
-});
-if (!(user.value.loggedIn)) {
-  this.$router.push('/login')
-}
-</script>
-
 <template>
   <div v-if="user.loggedIn" class="center-div">
     <h2 align="center">
-      Edition d'une blague
+      Edition d'un QCM
     </h2>
     <v-row v-if="etape.nom">
       <v-col>
@@ -76,7 +62,9 @@ import { computed } from "vue";
 import { auth } from '../../firebaseConfig'
 import { uploadImage } from '../../utils/UploadImage.js'
 import { modifyEtapeInParcours } from '../../utils/queries.js'
+import ImagePicker from '../../components/ImagePicker.vue'
 export default {
+  components: { ImagePicker },
   name: "EditBlagueComponent",
   data() {
     return {
@@ -138,6 +126,19 @@ export default {
   async mounted() {
     await this.getInfos()
   },
+  setup() {
+    const store = useStore()
+    auth.onAuthStateChanged(user => {
+      store.dispatch("fetchUser", user);
+    });
+    const user = computed(() => {
+      return store.getters.user;
+    });
+    if (!(user.value.loggedIn)) {
+      this.$router.push('/')
+    }
+    return { user }
+  }
 };
 </script>
 

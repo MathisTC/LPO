@@ -22,7 +22,7 @@
     
     <br>
     <div class="precedent">
-        <router-link custom v-slot="{ navigate }" to="/">
+        <router-link custom v-slot="{ navigate }" to="/gestioncommune">
           <button @click="navigate" role="link" class="routerLink btn orangebtn">Retour</button>
         </router-link>
     </div>
@@ -60,7 +60,7 @@ export default {
     const Create = async () => {
       try {
         await addCity(nom, code_insee, code_postal)
-        router.push('/')
+        router.push('/gestioncommune')
       }
       catch (err) {
         console.log(err);
@@ -68,7 +68,7 @@ export default {
     }
 
     if (!(user.value.loggedIn)) {
-      router.push('/login')
+      router.push('/')
     }
     return { user, Create, nom, code_insee, code_postal }
   }

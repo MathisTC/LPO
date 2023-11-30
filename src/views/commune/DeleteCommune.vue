@@ -10,7 +10,7 @@
         <button class="btn greenbtn" @click="push()">Non</button>
     </v-row>
     <div class="precedent">
-        <router-link custom v-slot="{ navigate }" to="/">
+        <router-link custom v-slot="{ navigate }" to="/gestioncommune">
           <button @click="navigate" role="link" class="routerLink btn orangebtn">Retour</button>
         </router-link>
     </div>
@@ -43,14 +43,14 @@ export default {
       return store.getters.user;
     });
     if (!(user.value.loggedIn)) {
-      router.push('/login')
+      router.push('/')
     }
     const Delete = async () => {
       deleteCommune(router.currentRoute.value.params.commune)
-      router.push('/')
+      router.push('/gestioncommune')
     }
     const push = async () => {
-      router.push('/')
+      router.push('/gestioncommune')
     }
     
     return { user, Delete, push }
