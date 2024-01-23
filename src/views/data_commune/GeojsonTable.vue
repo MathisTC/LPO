@@ -5,7 +5,6 @@
 </template>
   
 <script>
-import { VDataTable } from 'vuetify/lib/labs/components';
 export default {
     props: [
         'areaCode',
@@ -16,7 +15,6 @@ export default {
         'hasloaded'
     ],
     components: {
-        VDataTable
     },
     data() {
         return {
@@ -49,7 +47,7 @@ export default {
         if (this.reproduction) {
             this.re = 'oui'
         }
-        if(this.hasloaded) {
+        if (this.hasloaded) {
             this.fetchData_filter();
         } else {
             this.fetchData()
@@ -57,21 +55,21 @@ export default {
     },
     methods: {
         fetchData() {
-        fetch("https://data.lpo-aura.org/web/files/data/mv_sem_com_list_sp.geojson")
-            .then((response) => response.json())
-            .then((data) => {
-            this.features = data.features
-                .map(({ properties }) => {
-                    properties.reproduction = properties.reproduction ? "oui" : "non";
-                    properties.lr = properties.lr ? "oui" : "non";
-                    properties.protection = properties.protection ? "oui" : "non";
-                    return properties;
+            fetch("https://data.lpo-aura.org/web/files/data/mv_sem_com_list_sp.geojson")
+                .then((response) => response.json())
+                .then((data) => {
+                    this.features = data.features
+                        .map(({ properties }) => {
+                            properties.reproduction = properties.reproduction ? "oui" : "non";
+                            properties.lr = properties.lr ? "oui" : "non";
+                            properties.protection = properties.protection ? "oui" : "non";
+                            return properties;
+                        })
+                        .filter((properties) => properties.area_code === this.areaCode);
                 })
-                .filter((properties) => properties.area_code === this.areaCode);
-            })
-            .catch((error) => {
-            console.error("Error fetching data:", error);
-            });
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                });
         },
 
         fetchData_filter() {
@@ -89,10 +87,10 @@ export default {
                         .filter((properties) => {
                             return (
                                 properties.area_code === this.areaCode &&
-                                (properties.lr === this.lr || this.lr === 'non' )&&
-                                (properties.protection === this.pr || this.pr === 'non' ) &&
-                                (properties.reproduction === this.re|| this.re === 'non') &&
-                                ( !this.groupe || this.groupe.length == 0 || this.groupe.includes(properties.groupe_taxo_fr))
+                                (properties.lr === this.lr || this.lr === 'non') &&
+                                (properties.protection === this.pr || this.pr === 'non') &&
+                                (properties.reproduction === this.re || this.re === 'non') &&
+                                (!this.groupe || this.groupe.length == 0 || this.groupe.includes(properties.groupe_taxo_fr))
                             );
                         }
                         );

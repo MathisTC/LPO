@@ -1,6 +1,6 @@
 <template>
   <div v-if="user.loggedIn" class="center-div">
-    <h2 align="center">
+    <h2 class="text-xl my-4" align="center">
       Création d'un code César
     </h2>
     <br>
@@ -20,7 +20,6 @@
         <br>
         <v-text-field disabled label="prévisualisation" no-resize required v-model="previsualisation" />
         <br>
-        <v-slider step="5" thumb-label="always" :min="0" :max="100" v-model="poids"></v-slider>
       </v-col>
       <v-col>
         <h3 align="center"> Affichage après réponse</h3>
@@ -28,6 +27,7 @@
           v-model="titreMauvaiseReponse"></v-textarea>
         <br>
         <v-textarea label="Titre si bonne réponse" rows="1" no-resize required v-model="titreBonneReponse"></v-textarea>
+        <LinkInsert />
         <br>
         <v-textarea label="Texte après la réponse" rows="4" required auto-grow v-model="texteApresReponse" />
         <br>
@@ -76,7 +76,7 @@
     </v-row>
     <br><br>
     <div class="precedent">
-      <button @click="createEtape()" type="submit" width="100%" class="btn greenbtn">Créer Etape</button>
+      <button @click="createEtape()" type="submit" width="100%" class="btn greenbtn bg-green">Créer Etape</button>
       <br>
       <router-link custom v-slot="{ navigate }"
         :to="'/createetapeinparcours/' + $router.currentRoute.value.params.parcours">
@@ -119,7 +119,6 @@ export default {
       especes: [],
       espece: '',
       parcour: {},
-      poids: 0
     }
   },
   methods: {
@@ -167,7 +166,7 @@ export default {
       }
     },
     async createEtape() {
-      var cesar = new JeuCesar(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.question, this.texteBrut, this.decalage, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse, this.poids)
+      var cesar = new JeuCesar(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.question, this.texteBrut, this.decalage, this.titreBonneReponse, this.titreMauvaiseReponse, this.texteApresReponse)
       try {
         const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours, cesar.generateFirestoreData())
         if (this.image != '') {

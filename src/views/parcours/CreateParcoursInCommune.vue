@@ -1,51 +1,44 @@
 <template>
-  <div v-if="user.loggedIn">
-    <div class="center-div">
-      <h2 align="center">
-        Créer un parcours dans la commune {{ $route.params.commune }}
-      </h2>
-      <v-row>
-        <v-col>
-          <h3 align="center"> Paramètres du parcours</h3>
-          <v-textarea label="Nom du parcours" rows="1" variant="outlined" no-resize required autofocus
-            v-model="titre"></v-textarea>
-          <br>
-          <v-textarea label="Description du parcours" required auto-grow v-model="description" />
-          <br>
-          <v-combobox clearable label="Difficulté" required v-model="difficulte"
-            :items="['Très facile', 'Facile', 'Moyen', 'Difficile', 'Très difficile']"></v-combobox>
-          <br>
-          <div class="timeSelectContainer">
-            <label class="label"> Durée du parcours: </label>
-            <v-combobox v-model="heure" :items="hours" label="Heure" required></v-combobox>
-            <v-combobox v-model="minute" :items="minutes" label="Minute" required></v-combobox>
-          </div>
-        </v-col>
-        <v-col>
-          <ImagePicker @imageUpdated="(image) => this.image = image"
-            @bytesUpdated="(bytesArray) => this.bytesarray = bytesArray" />
-        </v-col>
-      </v-row>
-      <br><br>
-      <button @click="createParcoursInCommune()" type="submit" width="100%" class="btn greenbtn">Créer parcours</button>
-      <br>
-      <div class="precedent">
-        <router-link custom v-slot="{ navigate }" :to="'/editcommune/' + $route.params.commune">
-          <button @click="navigate" role="link" class="routerLink btn orangebtn">Retour</button>
-        </router-link>
-      </div>
+  <div class="center-div">
+    <h2 class="text-xl my-4" align="center">
+      Créer un parcours dans la commune {{ $route.params.commune }}
+    </h2>
+    <v-row>
+      <v-col>
+        <h3 align="center"> Paramètres du parcours</h3>
+        <v-textarea label="Nom du parcours" rows="1" variant="outlined" no-resize required autofocus
+          v-model="titre"></v-textarea>
+        <br>
+        <v-textarea label="Description du parcours" required auto-grow v-model="description" />
+        <br>
+        <v-combobox clearable label="Difficulté" required v-model="difficulte"
+          :items="['Très facile', 'Facile', 'Moyen', 'Difficile', 'Très difficile']"></v-combobox>
+        <br>
+        <div class="timeSelectContainer">
+          <label class="label"> Durée du parcours: </label>
+          <v-combobox v-model="heure" :items="hours" label="Heure" required></v-combobox>
+          <v-combobox v-model="minute" :items="minutes" label="Minute" required></v-combobox>
+        </div>
+      </v-col>
+      <v-col>
+        <ImagePicker @imageUpdated="(image) => this.image = image"
+          @bytesUpdated="(bytesArray) => this.bytesarray = bytesArray" />
+      </v-col>
+    </v-row>
+    <br><br>
+    <button @click="createParcoursInCommune()" type="submit" width="100%" class="btn greenbtn bg-green">Créer
+      parcours</button>
+    <br>
+    <div class="precedent">
+      <router-link custom v-slot="{ navigate }" :to="'/editcommune/' + $route.params.commune">
+        <button @click="navigate" role="link" class="routerLink btn orangebtn">Retour</button>
+      </router-link>
     </div>
-  </div>
-
-  <div v-else class="alert alert-danger" role="alert">
-    You are not logged in!
   </div>
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { computed } from "vue";
-import { auth } from '../../firebaseConfig'
+
 import { createParcours } from '../../utils/queries.js'
 import { uploadImage } from '../../utils/UploadImage.js'
 import ImagePicker from '../../components/ImagePicker.vue'
@@ -102,19 +95,7 @@ export default {
   mounted() {
     this.commune = this.$router.currentRoute.value.params.commune;
   },
-  setup() {
-    const store = useStore()
-    auth.onAuthStateChanged(user => {
-      store.dispatch("fetchUser", user);
-    });
-    const user = computed(() => {
-      return store.getters.user;
-    });
-    if (!(user.value.loggedIn)) {
-      this.$router.push('/')
-    }
-    return { user }
-  }
+
 };
 </script>
 

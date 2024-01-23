@@ -1,4 +1,4 @@
-/* eslint-disable */ 
+/* eslint-disable */
 import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/Login.vue';
 import GestionCommune from '../views/GestionCommune.vue';
@@ -110,17 +110,17 @@ const routes = [
     path: '/codecesar/:parcours',
     name: 'codecesar',
     component: codecesar
-  }, 
+  },
   {
     path: '/informations/:parcours',
     name: 'informations',
     component: informations
-  }, 
+  },
   {
     path: '/intru/:parcours',
     name: 'intru',
     component: intru
-  }, 
+  },
   {
     path: '/lesaviezvous/:parcours',
     name: 'lesaviezvous',
@@ -129,17 +129,17 @@ const routes = [
     path: '/paysage/:parcours',
     name: 'paysage',
     component: paysage
-  }, 
+  },
   {
     path: '/pointgps/:parcours',
     name: 'pointgps',
     component: pointgps
-  }, 
+  },
   {
     path: '/pyramide/:parcours',
     name: 'pyramide',
     component: pyramide
-  }, 
+  },
   {
     path: '/qcm/:parcours',
     name: 'qcm',
@@ -312,4 +312,16 @@ const router = createRouter({
   routes
 })
 
+import store from '@/store';
+
+router.beforeEach((to, from, next) => {
+  // Vérifiez si la route nécessite une authentification / s'il ne s'agit pas d'admin
+  const requiresAuth = to.name != "login";
+  // Si la route nécessite une authentification et l'utilisateur n'est pas connecté
+  if (requiresAuth && !store.getters.user.loggedIn) {
+    next('/'); // Redirigez l'utilisateur vers la page de connexion
+  } else {
+    next(); // Permettez l'accès à la route
+  }
+});
 export default router

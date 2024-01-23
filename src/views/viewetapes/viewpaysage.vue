@@ -1,7 +1,7 @@
 <template>
-  <h2 align="center">
+  <h2 class="text-xl" align="center">
     Parcours: {{ parcour }}
-  </h2> <br>
+  </h2><br>
   <div class="flex items-center">
     <Phone :etape="etape.n_etape + '/' + etapeMax" class="flex flex-col">
       <div class="bg-gray-200 rounded-md w-full p-3 overflow-y-visible">
@@ -9,7 +9,10 @@
         <div class="flex justify-center">
           <img class="justify-center mb-3 max-h-[200px] " :src="etape.image_url">
         </div>
-        <p class="text-[10px] text-gray-600" ref="etape_texte"></p>
+        <p class="text-[10px] text-gray-600" ref="etape_texte">{{ etape.texte }}</p>
+        <div class="mt-5 ml-1 mb-5 border-[1.5px] border-black rounded-[15px] w-fit">
+          <p class="p-1 ml-1 mr-6 text-slate-400 font-bold">CODE</p>
+        </div>
       </div>
       <div class="flex justify-center h-8 mt-4 gap-3">
         <button v-if="etape.ordre != 1" @click="previous()" class="w-2/5 bg-blue rounded-2xl">Précédent</button><br>
@@ -17,6 +20,7 @@
           class="w-2/5 bg-green rounded-2xl">Suivant</button><br>
       </div>
     </Phone>
+
     <div>
       <p>Prévisualisation de la page</p>
       <router-link custom v-slot="{ navigate }" :to="'/editetapes/' + $route.query.parcoursid">
@@ -27,14 +31,10 @@
 </template>
 
 <script>
-
-
 import Phone from "@/components/PhoneView.vue";
-import { parseText } from "@/utils/parseText";
-export default {
-  components: { Phone, },
 
-  name: "EcoGesteComponent",
+export default {
+  name: "ViewInfoComponent",
   data() {
     return {
       progress: 0,
@@ -45,6 +45,7 @@ export default {
       etapeMax: ''
     }
   },
+  components: { Phone },
   methods: {
     previous() {
       if (parseInt(this.$route.query.ordre) > 1) {
@@ -83,7 +84,6 @@ export default {
       this.parcour = this.$route.query.parcours
       this.etape = this.etapes[parseInt(this.$route.query.ordre) - 1].etape
       this.progress = (parseInt(this.$route.query.ordre - 1)) / (this.etapes.length - 1) * 100
-      this.$refs.etape_texte.innerHTML = parseText(this.etape.texte)
       this.etapeMax = this.etapes[(this.etapes.length) - 1].etape.n_etape
     },
   },
@@ -91,8 +91,5 @@ export default {
   async mounted() {
     await this.getInfos()
   },
-
 };
 </script>
-
-<style scoped></style>

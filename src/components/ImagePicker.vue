@@ -1,39 +1,41 @@
 <template>
-  <div align="center" >
+  <div align="center">
     <h3 v-if="doNotDisplayTitle !== true" align="center"> Choisir une image </h3>
-    <label :for="'file' + number">
-      <svg-icon class="iconImage" type="mdi" :path="mdiPlus" :size="40"></svg-icon>
-    </label>
-    <input @change="uploadNewImage" class="inputfile" type="file" name="file" :id="'file' + number" accept="image/*" />
-    <v-dialog transition="dialog-bottom-transition"  width="800px">
-      <template v-slot:activator="{ props }">
-        <svg-icon v-bind="props" class="iconImage" type="mdi" :path="mdiMagnify" :size="40"></svg-icon>
-      </template>
-      <template v-slot:default="{ isActive }">
-        <v-card>
-          <v-toolbar color="green">
-            <div>
-              <form action="#" @submit.prevent="searchSpecies()">
-                <input placeholder="Rechercher une espèce" v-model="espece" required autofocus />
-                <input type="submit" hidden />
-              </form>
+    <div class="flex justify-center">
+      <label :for="'file' + number">
+        <svg-icon class="iconImage" type="mdi" :path="mdiPlus" :size="40"></svg-icon>
+      </label>
+      <input @change="uploadNewImage" class="inputfile" type="file" name="file" :id="'file' + number" accept="image/*" />
+      <v-dialog transition="dialog-bottom-transition" width="800px">
+        <template v-slot:activator="{ props }">
+          <svg-icon v-bind="props" class="iconImage" type="mdi" :path="mdiMagnify" :size="40"></svg-icon>
+        </template>
+        <template v-slot:default="{ isActive }">
+          <v-card>
+            <v-toolbar color="green">
+              <div>
+                <form action="#" @submit.prevent="searchSpecies()">
+                  <input placeholder="Rechercher une espèce" v-model="espece" required autofocus />
+                  <input type="submit" hidden />
+                </form>
+              </div>
+            </v-toolbar>
+            <div class="container">
+              <div v-if="error">{{ error }}</div>
+              <div class="card" v-for="uneEspece in especes" v-bind:key="uneEspece" @click="select(uneEspece)">
+                <img v-if="uneEspece.selected" class="img-selected" :src="uneEspece._links.file.href">
+                <img v-else class="img" :src="uneEspece._links.file.href">
+              </div>
             </div>
-          </v-toolbar>
-          <div class="container">
-            <div v-if="error">{{ error }}</div>
-            <div class="card" v-for="uneEspece in especes" v-bind:key="uneEspece" @click="select(uneEspece)">
-              <img v-if="uneEspece.selected" class="img-selected" :src="uneEspece._links.file.href">
-              <img v-else class="img" :src="uneEspece._links.file.href">
-            </div>
-          </div>
-          <v-card-actions class="justify-end">
-            <v-btn variant="text" @click="isActive.value = false">Fermer</v-btn>
-            <v-btn v-if="imagepicked" variant="text" @click="isActive.value = false, validate()">Choisir image</v-btn>
-          </v-card-actions>
-        </v-card>
-      </template>
-    </v-dialog>
-    <br>
+            <v-card-actions class="justify-end">
+              <v-btn variant="text" @click="isActive.value = false">Fermer</v-btn>
+              <v-btn v-if="imagepicked" variant="text" @click="isActive.value = false, validate()">Choisir image</v-btn>
+            </v-card-actions>
+          </v-card>
+        </template>
+      </v-dialog>
+      <br>
+    </div>
     <div v-if="image || bytesarray || previousImageUrl">Prévisualisation de l'image</div>
     <img v-if="image" class="preview" :src="image" />
     <img v-else class="preview" id="addedimage" />
@@ -115,15 +117,15 @@ export default {
     },
   },
   setup() {
-    return { mdiMagnify, mdiPlus}
+    return { mdiMagnify, mdiPlus }
   }
 }
 </script>
-<style> 
-.imageselector {
-  min-width: 70%;
-}
-.btn {
+<style> .imageselector {
+   min-width: 70%;
+ }
+
+ .btn {
    display: block;
    margin-left: auto;
    margin-right: auto;

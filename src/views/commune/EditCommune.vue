@@ -1,41 +1,31 @@
 <template>
-  <div v-if="user.loggedIn && display">
-    <br>
-    <h2 align="center">
-      Parcours de la commune:
-      {{ $route.params.commune }}
-    </h2>
-    <div class="parcours" v-for="parcour in parcours" :key="parcour">
-      <div>{{ parcour.titre }}</div>
-      <div>
-        <svg-icon @click="EditParcours(parcour)" class="iconEditDelete" type="mdi" :path="mdiPencilOutline" :size="20">
-        </svg-icon>
-        <svg-icon @click="DeleteParcours(parcour)" class="iconEditDelete" type="mdi" :path="mdiDeleteOutline" :size="20"></svg-icon>
-      </div>
-    </div>
-    <br><br>
-    <button @click="AddParcoursInCommune($route.params.commune)" class="btn greenbtn">Ajouter un parcours</button><br>
-
-    <br><br>
-    <button @click="InformationCommune($route.params.commune)" class="btn bluebtn">Données espèces
-    </button><br>
-    <div class="precedent">
-        <router-link custom v-slot="{ navigate }" to="/gestioncommune">
-          <button @click="navigate" role="link" class="routerLink btn orangebtn">Retour</button>
-        </router-link>
+  <h2 align="center">
+    Parcours de la commune:
+    {{ $route.params.commune }}
+  </h2>
+  <div class="parcours" v-for="parcour in parcours" :key="parcour">
+    <div>{{ parcour.titre }}</div>
+    <div class="flex">
+      <svg-icon @click="EditParcours(parcour)" class="iconEditDelete" type="mdi" :path="mdiPencilOutline" :size="20">
+      </svg-icon>
+      <svg-icon @click="DeleteParcours(parcour)" class="iconEditDelete" type="mdi" :path="mdiDeleteOutline"
+        :size="20"></svg-icon>
     </div>
   </div>
+  <br><br>
+  <button @click="AddParcoursInCommune($route.params.commune)" class="btn greenbtn bg-green">Ajouter un
+    parcours</button><br>
 
-  <div v-else class="alert alert-danger" role="alert">
-    You are not logged in!
+  <br><br>
+  <button @click="InformationCommune($route.params.commune)" class="btn bluebtn">Données espèces
+  </button><br>
+  <div class="precedent">
+    <router-link class="routerLink" to="/gestioncommune"><button class="btn orangebtn">Retour</button></router-link>
   </div>
 </template>
 
 <script>
-import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { computed } from "vue";
-import { auth } from '../../firebaseConfig'
 import { getParcoursFromCommune, deleteParcours } from '../../utils/queries.js'
 import { ref } from "vue"
 import { mdiPencilOutline } from '@mdi/js';
@@ -45,7 +35,6 @@ export default {
 
   setup() {
     let parcours = ref([])
-    const store = useStore()
     const router = useRouter()
     let display = true;
 
@@ -72,28 +61,14 @@ export default {
       const response = confirm("Souhaitez vous vraiment supprimer le parcours: " + parcour.titre);
       if (response) {
         deleteParcours(parcour.identifiant);
-        for (let i = 0; i <parcours.value.length; i++)
-        {
-          if (parcours.value[i].identifiant == parcour.identifiant)
-          {
+        for (let i = 0; i < parcours.value.length; i++) {
+          if (parcours.value[i].identifiant == parcour.identifiant) {
             parcours.value.splice(i, 1)
           }
         }
       }
     }
-
-    auth.onAuthStateChanged(user => {
-      store.dispatch("fetchUser", user);
-    });
-    const user = computed(() => {
-      return store.getters.user;
-    });
-    if (!(user.value.loggedIn)) {
-      router.push('/')
-    }
-
-
-    return { display, user, getParcoursFromCommune, parcours, mdiPencilOutline, mdiDeleteOutline, EditParcours, AddParcoursInCommune, DeleteParcours, InformationCommune }
+    return { display, getParcoursFromCommune, parcours, mdiPencilOutline, mdiDeleteOutline, EditParcours, AddParcoursInCommune, DeleteParcours, InformationCommune }
   }
 
 
@@ -102,13 +77,12 @@ export default {
 </script>
 
 <style scoped>
-
-
 v-row {
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
+
 .btn {
   display: block;
   margin-left: auto;

@@ -1,79 +1,42 @@
 <template>
-  <div v-if="user.loggedIn" class="center-div">
-    <h2 align="center">
-      Parcours: {{ parcour }}
-    </h2> <br>
-    <v-row>
-      <v-col>
-        <h3> Informations </h3>
-          <div class="info"> 
-            <p> <strong> Type :  </strong> {{ etape.type }} </p> <br>
-            <p> <strong> Nom : </strong>  {{ etape.nom }}</p> <br>
-            <p> <strong> Question : </strong> {{ etape.question }} </p> <br>
-            <p> <strong> Bonne réponse : </strong> <br> <img class="img" :src="images_tab[etape.index_bonneReponse]"></p> <br>
-          </div>
-      </v-col>
-      <v-col>
-        <h3> Après jeu </h3>
-          <div class="info"> 
-            <p> <strong> Titre bonne réponse :  </strong> {{ etape.titreSiBonneReponse }} </p> <br>
-            <p> <strong> Titre mauvaise réponse : </strong>  {{ etape.titreSiMauvaiseReponse }}</p> <br>
-            <p> <strong> Texte : </strong> {{ etape.texteApresReponse }} </p>
-          </div>
-      </v-col>
-      <v-col>
-        <h3> Images </h3>
-        <v-row>
-          <v-col>
-            <img class="img" :src="images_tab[0]">
-          </v-col>
-          <v-col>
-            <img class="img" :src="images_tab[1]">
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <img class="img" :src="images_tab[2]">
-          </v-col>
-          <v-col>
-            <img class="img" :src="images_tab[3]">
-          </v-col>
-        </v-row>      
-      </v-col>
-  </v-row>
-  <br><br>
-  <p> <strong> Etape {{ etape.ordre }} / {{ etapes.length }}</strong></p>
-  <v-progress-linear color="primary" model-value="100" v-model="progress"></v-progress-linear> <br>
-    <div class="precedent">
-      <v-row>
-        <v-col>
-            <button v-if="etape.ordre != 1" @click="previous()" class="btn bluebtn">Etape précédente</button><br>
-        </v-col>
-        <v-col>
-          <button v-if="etape.ordre != etapes.length" @click="next()" class="btn greenbtn">Etape suivante</button><br>
-        </v-col>
-      </v-row>
-      <v-row>
-        <router-link custom v-slot="{ navigate }" :to="'/editetapes/' + $route.query.parcoursid">
-          <button @click="navigate" role="link" class="routerLink btn orangebtn">Quitter</button>
-        </router-link>
-      </v-row>
-    </div>
-  </div>
+  <h2 align="center">
+    Parcours: {{ parcour }}
+  </h2> <br>
+  <div class="flex items-center">
+    <Phone :etape="etape.ordre + '/' + etapeMax" class="flex flex-col">
+      <div class="bg-gray-200 rounded-md w-full p-3 overflow-y-visible">
+        <p class="text-black text-md font-bold my-3"> {{ etape.nom }}</p>
 
-  <div v-else class="alert alert-danger" role="alert">
-    You are not logged in!
+        <p class="text-[10px] text-gray-600" ref="etape_texte">{{ etape.question }}</p>
+        <div class="grid grid-col-2 mt-4 mb-4 gap-8 justify-items-center">
+          <img class="col-span-1 col-start-1 max-h-[90px]" :src="images_tab[0]">
+          <img class="col-span-1 col-start-2 max-h-[90px]" :src="images_tab[1]">
+          <img class="col-span-1 col-start-1 max-h-[90px]" :src="images_tab[2]">
+          <img class="col-span-1 col-start-2 max-h-[90px]" :src="images_tab[3]">
+        </div>
+      </div>
+      <div class="flex justify-center h-8 mt-4 gap-3">
+        <button v-if="etape.ordre != 1" @click="previous()" class="w-2/5 bg-blue rounded-2xl">Précédent</button><br>
+        <button v-if="etape.ordre != etapes.length" @click="next()"
+          class="w-2/5 bg-green rounded-2xl">Suivant</button><br>
+      </div>
+    </Phone>
+
+    <div>
+      <p>Prévisualisation de la page</p>
+      <router-link custom v-slot="{ navigate }" :to="'/editetapes/' + $route.query.parcoursid">
+        <button @click="navigate" role="link" class="bg-orange-600 rounded-lg w-full">Quitter</button>
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { computed } from "vue";
-import { auth } from '../../firebaseConfig'
-
+import Phone from '@/components/PhoneView.vue';
 
 export default {
   name: "ViewInfoComponent",
+  components: { Phone },
   data() {
     return {
       progress: 0,
@@ -81,47 +44,49 @@ export default {
       etape: {},
       etapes: {},
       parcour: '',
-      images_tab:[]
+      images_tab: [],
+      etapeMax: ''
     }
   },
   methods: {
     previous() {
-      if(parseInt(this.$route.query.ordre) > 1) {
-      this.$router.push({
-        path: '/transistate',
-        query: {
-          path: '/viewetape/' + this.etapes[parseInt(this.$route.query.ordre) - 2].etape.type + '/' + this.etapes[parseInt(this.$route.query.ordre) - 2].id,
-          parcoursid: this.$route.query.parcoursid,
-          parcours: this.parcour,
-          etapes: JSON.stringify(this.etapes),
-          ordre: this.etape.ordre - 1
-        }
-      })
-    } else {
-      this.$router.push('/editetapes/' + this.$route.query.parcoursid)
-    }
+      if (parseInt(this.$route.query.ordre) > 1) {
+        this.$router.push({
+          path: '/transistate',
+          query: {
+            path: '/viewetape/' + this.etapes[parseInt(this.$route.query.ordre) - 2].etape.type + '/' + this.etapes[parseInt(this.$route.query.ordre) - 2].id,
+            parcoursid: this.$route.query.parcoursid,
+            parcours: this.parcour,
+            etapes: JSON.stringify(this.etapes),
+            ordre: this.etape.ordre - 1
+          }
+        })
+      } else {
+        this.$router.push('/editetapes/' + this.$route.query.parcoursid)
+      }
     },
     next() {
-      if(parseInt(this.$route.query.ordre) <this.etapes.length) {
-      this.$router.push({
-        path: '/transistate',
-        query: {
-          path: '/viewetape/' + this.etapes[parseInt(this.$route.query.ordre)].etape.type + '/' + this.etapes[parseInt(this.$route.query.ordre)].id,
-          parcoursid: this.$route.query.parcoursid,
-          parcours: this.parcour,
-          etapes: JSON.stringify(this.etapes),
-          ordre: this.etape.ordre + 1
-        }
-      })
-    } else {
-      this.$router.push('/editetapes/' + this.$route.query.parcoursid)
-    }
+      if (parseInt(this.$route.query.ordre) < this.etapes.length) {
+        this.$router.push({
+          path: '/transistate',
+          query: {
+            path: '/viewetape/' + this.etapes[parseInt(this.$route.query.ordre)].etape.type + '/' + this.etapes[parseInt(this.$route.query.ordre)].id,
+            parcoursid: this.$route.query.parcoursid,
+            parcours: this.parcour,
+            etapes: JSON.stringify(this.etapes),
+            ordre: this.etape.ordre + 1
+          }
+        })
+      } else {
+        this.$router.push('/editetapes/' + this.$route.query.parcoursid)
+      }
     },
     async getInfos() {
       this.etapes = JSON.parse(this.$route.query.etapes);
       this.parcour = this.$route.query.parcours
       this.etape = this.etapes[parseInt(this.$route.query.ordre) - 1].etape
       this.progress = (parseInt(this.$route.query.ordre - 1)) / (this.etapes.length - 1) * 100
+      this.etapeMax = this.etapes[(this.etapes.length) - 1].etape.n_etape
     },
   },
 
@@ -129,38 +94,6 @@ export default {
     await this.getInfos()
     this.images_tab = this.etape.images_tab
   },
-  setup() {
-    const store = useStore()
-    auth.onAuthStateChanged(user => {
-      store.dispatch("fetchUser", user);
-    });
-    const user = computed(() => {
-      return store.getters.user;
-    });
-    if (!(user.value.loggedIn)) {
-      this.$router.push('/')
-    }
-    return { user }
-  }
+
 };
 </script>
-
-<style scoped>
-.btn {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-.img {
-  width: 60%
-}
-
-.info {
-  padding: 10px;
-  margin-right: auto;
-  background-color: #ebebeb;
-  font-size: 14px;
-  border-radius: 10px;
-}
-</style>

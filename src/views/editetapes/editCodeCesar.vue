@@ -1,58 +1,52 @@
 <template>
-  <div v-if="user.loggedIn" class="center-div">
-    <h2 align="center">
-      Edition d'un code César
-    </h2>
-    <v-row v-if="etape.nom">
-      <v-col>
-        <h3 align="center"> Paramètres du jeu</h3>
-        <v-textarea label="Nom du jeu" rows="1" variant="outlined" no-resize autofocus required
-          v-model="etape.nom"></v-textarea>
-        <br>
-        <v-textarea label="Question (indice)" rows="2" no-resize required v-model="etape.question"></v-textarea>
-        <br>
-        <v-textarea label="Texte à coder" rows="1" no-resize required
-          @change="previsualisation = cesar(etape.texteBrut, etape.decalage)" v-model="etape.texteBrut"></v-textarea>
-        <br>
-        <v-text-field label="Décalage" type="number" class="selectDecalage" no-resize required
-          @change="previsualisation = cesar(etape.texteBrut, etape.decalage)" v-model="etape.decalage" />
-        <br>
-        <v-text-field disabled label="prévisualisation" no-resize required v-model="previsualisation" />
-        <br>
+  <h2 align="center">
+    Edition d'un code César
+  </h2>
+  <v-row>
+    <v-col>
+      <h3 align="center"> Paramètres du jeu</h3>
+      <v-textarea label="Nom du jeu" rows="1" variant="outlined" no-resize autofocus required
+        v-model="etape.nom"></v-textarea>
+      <br>
+      <v-textarea label="Question (indice)" rows="2" no-resize required v-model="etape.question"></v-textarea>
+      <br>
+      <v-textarea label="Texte à coder" rows="1" no-resize required
+        @change="previsualisation = cesar(etape.texteBrut, etape.decalage)" v-model="etape.texteBrut"></v-textarea>
+      <br>
+      <v-text-field label="Décalage" type="number" class="selectDecalage" no-resize required
+        @change="previsualisation = cesar(etape.texteBrut, etape.decalage)" v-model="etape.decalage" />
+      <br>
+      <v-text-field disabled label="prévisualisation" no-resize required v-model="previsualisation" />
+      <br>
 
-      </v-col>
-      <v-col>
-        <h3 align="center"> Affichage après réponse</h3>
-        <v-textarea label="Titre si mauvaise réponse" rows="1" no-resize required
-          v-model="etape.titreSiMauvaiseReponse"></v-textarea>
-        <br>
-        <v-textarea label="Titre si bonne réponse" rows="1" no-resize required v-model="etape.titreSiBonneReponse"></v-textarea>
-        <br>
-        <v-textarea label="Texte après la réponse" rows="4" required auto-grow v-model="etape.texteApresReponse" />
-        <br>
-      </v-col>
-      <v-col>
-        <ImagePicker :previousImageUrl="etape.image_url" @imageUpdated="(image) => updateImage(image)"
-          @bytesUpdated="(bytesArray) => updateBytes(bytesArray)" />
-      </v-col>
-    </v-row>
-    <div align="center">
-      <button @click="EditEtape()" type="submit" width="100%" class="btn greenbtn">Modifier l'étape</button>
-      <br><br>
-      <router-link class="routerLink" :to="'/editetapes/' + parcoursId"><button
-          class="btn orangebtn">Retour</button></router-link><br>
-    </div>
-  </div>
-
-  <div v-else class="alert alert-danger" role="alert">
-    You are not logged in!
+    </v-col>
+    <v-col>
+      <h3 align="center"> Affichage après réponse</h3>
+      <v-textarea label="Titre si mauvaise réponse" rows="1" no-resize required
+        v-model="etape.titreSiMauvaiseReponse"></v-textarea>
+      <br>
+      <v-textarea label="Titre si bonne réponse" rows="1" no-resize required
+        v-model="etape.titreSiBonneReponse"></v-textarea>
+      <br>
+      <LinkInsert />
+      <v-textarea label="Texte après la réponse" rows="4" required auto-grow v-model="etape.texteApresReponse" />
+      <br>
+    </v-col>
+    <v-col v-if="loaded">
+      <ImagePicker :previousImageUrl="etape.image_url" @imageUpdated="(image) => updateImage(image)"
+        @bytesUpdated="(bytesArray) => updateBytes(bytesArray)" />
+    </v-col>
+  </v-row>
+  <div align="center">
+    <button @click="EditEtape()" type="submit" width="100%" class="btn greenbtn bg-green">Modifier l'étape</button>
+    <br><br>
+    <router-link class="routerLink" :to="'/editetapes/' + parcoursId"><button
+        class="btn orangebtn">Retour</button></router-link><br>
   </div>
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { computed } from "vue";
-import { auth } from '../../firebaseConfig'
+
 import { uploadImage } from '../../utils/UploadImage.js'
 import { modifyEtapeInParcours } from '../../utils/queries.js'
 import ImagePicker from '../../components/ImagePicker.vue'
@@ -67,6 +61,7 @@ export default {
       imagepicked: false,
       bytesArray: '',
       image_url: '',
+      loaded: false,
       previsualisation: ''
     }
   },
@@ -110,6 +105,7 @@ export default {
     async getInfos() {
       this.parcoursId = this.$route.query.parcoursId
       this.etape = JSON.parse(this.$route.query.etape).etape
+      this.loaded = true
       this.etapeId = JSON.parse(this.$route.query.etape).id
       this.previsualisation = this.cesar(this.etape.texteBrut, this.etape.decalage)
     },
@@ -149,19 +145,7 @@ export default {
   async mounted() {
     await this.getInfos()
   },
-  setup() {
-    const store = useStore()
-    auth.onAuthStateChanged(user => {
-      store.dispatch("fetchUser", user);
-    });
-    const user = computed(() => {
-      return store.getters.user;
-    });
-    if (!(user.value.loggedIn)) {
-      this.$router.push('/')
-    }
-    return { user }
-  }
+
 };
 </script>
 

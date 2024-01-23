@@ -1,59 +1,48 @@
 <template>
-  <div>
-    <navbar></navbar>
-    <main>
-      <Transition>
-      <router-view></router-view>
-    </Transition>
-    </main>
+  <div class="router-view">
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import navbar from "./components/Navbar";
 import router from "./routes/index.js";
 const GoBack = () => {
-      router.go(-1)
-    }
+  router.go(-1)
+}
 export default {
   GoBack,
   components: {
-    navbar
   },
 };
 
 </script>
 <style>
-
-
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.5s;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-
 @font-face {
   font-family: "Sora";
   src: url("./assets/fonts/Sora/Sora-VariableFont_wght.ttf");
 }
-body {
-  --var1: #76B828;
 
+.router-view {
+  padding: 10px;
+  padding-top: 0%;
+  white-space: pre-line;
+
+}
+
+body {
   background-color: #f0f6f8;
   font-family: 'Sora'
 }
 
-h1,h2 {
-  color:#4487CD;
+h1,
+h2 {
+  color: #4487CD;
   margin-bottom: 15px;
 }
 
-h3,h4 {
-  color:#333333;
+h3,
+h4 {
+  color: #333333;
   margin-bottom: 15px;
 }
 
@@ -77,9 +66,6 @@ h3,h4 {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-.greenbtn {
-  background-color: #76B828;
-}
 .greenbtn:hover {
   background-color: #C9E0AD;
 }
@@ -87,6 +73,7 @@ h3,h4 {
 .bluebtn {
   background-color: #4487CD;
 }
+
 .bluebtn:hover {
   background-color: #adcce0;
 }
@@ -94,8 +81,9 @@ h3,h4 {
 .orangebtn {
   background-color: #cd8244;
 }
+
 .orangebtn:hover {
-	background-color:#e0c8ad;
+  background-color: #e0c8ad;
 }
 
 .routerLink {
@@ -103,11 +91,12 @@ h3,h4 {
 }
 
 .precedent {
-  position:-webkit-sticky;
+  position: -webkit-sticky;
   left: 2%;
   bottom: 2%;
   width: 100%
 }
+
 .label {
   display: block;
   margin-left: auto;
@@ -125,7 +114,7 @@ h3,h4 {
 
 .iconImage:hover {
   background-color: rgb(212, 212, 212);
-  color:white;
+  color: white;
   transition-duration: 250ms;
   padding: 0px;
 }
@@ -139,8 +128,6 @@ h3,h4 {
 
 .iconEditDelete:hover {
   color: grey;
-  transition-duration:200ms;
-  padding:1px;
-}
-
-</style>
+  transition-duration: 200ms;
+  padding: 1px;
+}</style>

@@ -1,62 +1,55 @@
 <template>
-  <div v-if="user.loggedIn" class="center-div">
-    <h2 align="center">
-      Edition d'une transition GPS
-    </h2>
-    <v-row v-if="etape.nom">
+  <h2 align="center">
+    Edition d'une transition GPS
+  </h2>
+  <v-row>
 
-      <v-col>
-        <h3 align="center"> Paramètres de la transition</h3>
-        <v-textarea label="Nom de la transition" rows="1" variant="outlined" no-resize autofocus required
-          v-model="etape.nom"></v-textarea>
+    <v-col>
+      <h3 align="center"> Paramètres de la transition</h3>
+      <v-textarea label="Nom de la transition" rows="1" variant="outlined" no-resize autofocus required
+        v-model="etape.nom"></v-textarea>
+      <br>
+      <LinkInsert />
+      <v-textarea label="Information de la transition" rows="3" required auto-grow v-model="etape.texte" />
+      <br>
+      <h4 align="center">Position du marqueur GPS</h4>
+      <br>
+      <div class="gpsSelectContainer">
+        <v-text-field label="Latitude" placeholder="Latitude" type="number" required v-model="etape.latitude" />
         <br>
-        <v-textarea label="Information de la transition" rows="3" required auto-grow v-model="etape.texte" />
+        <v-text-field label="Longitude" placeholder="Longitude" type="number" required v-model="etape.longitude" />
         <br>
-        <h4 align="center">Position du marqueur GPS</h4>
-        <br>
-        <div class="gpsSelectContainer">
-          <v-text-field label="Latitude" placeholder="Latitude" type="number" required v-model="etape.latitude" />
-          <br>
-          <v-text-field label="Longitude" placeholder="Longitude" type="number" required v-model="etape.longitude" />
-          <br>
-        </div>
-      </v-col>
-      <v-col>
-        <h3 align="center">Carte interactive </h3>
-        <div style="height:400px; width:400px">
-          <l-map id='map' ref="map" :zoom="zoom" :center="[etape.latitude, etape.longitude]">
-            <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
-              name="Carte de la ville"></l-tile-layer>
-            <l-marker draggable @update:lat-lng="Updatelatlng" :lat-lng="[etape.latitude, etape.longitude]"></l-marker>
-          </l-map>
-        </div>
-      </v-col>
-      <v-col>
-        <ImagePicker :previousImageUrl="etape.image_url" @imageUpdated="(image) => updateImage(image)"
-          @bytesUpdated="(bytesArray) => updateBytes(bytesArray)" />
-      </v-col>
-    </v-row>
-    <div align="center">
-      <button @click="EditEtape()" type="submit" width="100%" class="btn greenbtn">Modifier l'étape</button>
-      <br><br>
-      <router-link class="routerLink" :to="'/editetapes/' + parcoursId"><button
-          class="btn orangebtn">Retour</button></router-link><br>
-    </div>
-  </div>
-
-  <div v-else class="alert alert-danger" role="alert">
-    You are not logged in!
+      </div>
+    </v-col>
+    <v-col>
+      <h3 align="center">Carte interactive </h3>
+      <div style="height:400px; width:400px">
+        <l-map id='map' ref="map" :zoom="zoom" :center="[etape.latitude, etape.longitude]">
+          <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
+            name="Carte de la ville"></l-tile-layer>
+          <l-marker draggable @update:lat-lng="Updatelatlng" :lat-lng="[etape.latitude, etape.longitude]"></l-marker>
+        </l-map>
+      </div>
+    </v-col>
+    <v-col v-if="loaded">
+      <ImagePicker :previousImageUrl="etape.image_url" @imageUpdated="(image) => updateImage(image)"
+        @bytesUpdated="(bytesArray) => updateBytes(bytesArray)" />
+    </v-col>
+  </v-row>
+  <div align="center">
+    <button @click="EditEtape()" type="submit" width="100%" class="btn greenbtn bg-green">Modifier l'étape</button>
+    <br><br>
+    <router-link class="routerLink" :to="'/editetapes/' + parcoursId"><button
+        class="btn orangebtn">Retour</button></router-link><br>
   </div>
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { computed } from "vue";
-import { auth } from '../../firebaseConfig'
+
 import { uploadImage } from '../../utils/UploadImage.js'
 import { modifyEtapeInParcours } from '../../utils/queries.js'
 import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer, LMarker  } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LMarker } from "@vue-leaflet/vue-leaflet";
 import ImagePicker from '../../components/ImagePicker.vue'
 export default {
   name: "editPointGPS",
@@ -72,13 +65,14 @@ export default {
       imagepicked: false,
       bytesArray: '',
       image_url: '',
+      loaded: false
     }
   },
   methods: {
     Updatelatlng(event) {
       this.etape.latitude = event.lat
-      this.etape.longitude= event.lng
-  },
+      this.etape.longitude = event.lng
+    },
     updateImage(image) {
       this.image_url = image
       this.hasimagechanged = true
@@ -90,6 +84,7 @@ export default {
     async getInfos() {
       this.parcoursId = this.$route.query.parcoursId
       this.etape = JSON.parse(this.$route.query.etape).etape
+      this.loaded = true
       this.etapeId = JSON.parse(this.$route.query.etape).id
     },
     async EditEtape() {
@@ -124,19 +119,7 @@ export default {
   async mounted() {
     await this.getInfos()
   },
-  setup() {
-    const store = useStore()
-    auth.onAuthStateChanged(user => {
-      store.dispatch("fetchUser", user);
-    });
-    const user = computed(() => {
-      return store.getters.user;
-    });
-    if (!(user.value.loggedIn)) {
-      this.$router.push('/')
-    }
-    return { user }
-  }
+
 };
 </script>
 <style scoped>
@@ -183,7 +166,7 @@ export default {
 }
 
 .selectNumber {
-  width:45%;
+  width: 45%;
 }
 
 .inputfile {

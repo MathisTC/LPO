@@ -1,23 +1,25 @@
 <template>
   <div class="">
     <div v-if="error" class="">{{ error }}</div>
-      <div class="top-img">
+    <div class="top-img">
       <img class="lpo-img" src="../assets/lpo-logo.png" />
     </div>
 
     <div class="center-div">
-      <h1 align="center">
+      <h1 class="text-2xl my-4" align="center">
         Outil d'administration de l'application
       </h1>
       <form action="#" @submit.prevent="Login">
-        <input placeholder="Email" id="email" type="email" class="label" name="email" value required autofocus v-model="email" />
+        <input placeholder="Email" id="email" type="email" class="label" name="email" value required autofocus
+          v-model="email" />
         <br>
-        <input placeholder="Mot de passe" id="password" type="password" class="label" name="password" required v-model="password" />
+        <input placeholder="Mot de passe" id="password" type="password" class="label" name="password" required
+          v-model="password" />
         <br>
-        <button type="submit" class="btn greenbtn">Login</button>
-    </form>
+        <button type="submit" class="btn greenbtn bg-green">Login</button>
+      </form>
     </div>
-    
+
   </div>
 </template>
 
@@ -70,21 +72,23 @@ export default {
   height: 10%;
   width: 10%;
 }
+
 .label {
   display: block;
   margin-left: auto;
   margin-right: auto;
   width: 50%;
 }
+
 .btn {
   display: block;
   width: 30%;
   margin-left: auto;
   margin-right: auto;
 }
+
 .label {
   display: block;
   margin-left: auto;
   margin-right: auto;
-}
-</style>
+}</style>

@@ -1,63 +1,67 @@
 <template>
-  <div v-if="user.loggedIn" class="center-div">
-    <h2 align="center">
-      Parcours: {{ parcour }}
-    </h2> <br>
-    <v-row>
-      <v-col>
-        <h3> Informations </h3>
-          <div class="info"> 
-            <p> <strong> Type :  </strong> {{ etape.type }} </p> <br>
-            <p> <strong> Nom : </strong>  {{ etape.nom }}</p> <br>
-            <p> <strong> Question : </strong> {{ etape.question }} </p> <br>
-            <p> <strong> Nombre :  </strong> {{ etape.nombre }} </p> <br>
-          </div>
-      </v-col>
-      <v-col>
-        <h3> Après jeu </h3>
-          <div class="info"> 
-            <p> <strong> Titre bonne réponse :  </strong> {{ etape.titreSiBonneReponse }} </p> <br>
-            <p> <strong> Titre mauvaise réponse : </strong>  {{ etape.titreSiMauvaiseReponse }}</p> <br>
-            <p> <strong> Texte : </strong> {{ etape.texteApresReponse }} </p>
-          </div>
-      </v-col>
-      <v-col>
-        <h3> Image </h3>
-        <img class="img" :src="etape.image_url">
-      </v-col>
-  </v-row>
-  <br><br>
-  <p> <strong> Etape {{ etape.ordre }} / {{ etapes.length }}</strong></p>
-  <v-progress-linear color="primary" model-value="100" v-model="progress"></v-progress-linear> <br>
-    <div class="precedent">
-      <v-row>
-        <v-col>
-            <button v-if="etape.ordre != 1" @click="previous()" class="btn bluebtn">Etape précédente</button><br>
-        </v-col>
-        <v-col>
-          <button v-if="etape.ordre != etapes.length" @click="next()" class="btn greenbtn">Etape suivante</button><br>
-        </v-col>
-      </v-row>
-      <v-row>
-        <router-link custom v-slot="{ navigate }" :to="'/editetapes/' + $route.query.parcoursid">
-          <button @click="navigate" role="link" class="routerLink btn orangebtn">Quitter</button>
-        </router-link>
-      </v-row>
-    </div>
-  </div>
+  <h2 align="center">
+    Parcours: {{ parcour }}
+  </h2><br>
+  <div class="flex items-center">
+    <Phone :etape="etape.n_etape + '/' + etapeMax" class="flex flex-col">
+      <div class="bg-gray-200 rounded-md w-full p-3 overflow-y-visible">
+        <p class="text-black text-md font-bold my-3"> {{ etape.nom }}</p>
+        <div class="flex justify-center">
+          <img class="justify-center mb-3 max-h-[200px] " :src="etape.image_url">
+        </div>
+        <p class="text-[9px] text-gray-600" ref="etape_texte">
+          Remplir la pyramide jusqu'au sommet, selon le principe suivant : additionner deux bulles adjacentes (côte à
+          côte), la somme correspond à la bulle au-dessous.
+        </p>
 
-  <div v-else class="alert alert-danger" role="alert">
-    You are not logged in!
+        <p class="text-[12px]">{{ etape.question }}</p>
+
+
+        <div class="flex flex-col m-3 justify-center items-center gap-4">
+          <div class="flex gap-4 items-center">
+            <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center">1</div>
+            <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center">5</div>
+            <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center">3</div>
+            <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center">2</div>
+          </div>
+          <div class="flex gap-4 items-center">
+            <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center"></div>
+            <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center"></div>
+            <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center"></div>
+          </div>
+          <div class="flex gap-2 items-center">
+            <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center"></div>
+            <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center"></div>
+          </div>
+          <div class="flex items-center">
+            <div class="h-8 w-8 rounded-full bg-green-600 text-white flex items-center justify-center"></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="flex justify-center h-8 mt-4 gap-3">
+        <button v-if="etape.ordre != 1" @click="previous()" class="w-2/5 bg-blue rounded-2xl">Précédent</button><br>
+        <button v-if="etape.ordre != etapes.length" @click="next()"
+          class="w-2/5 bg-green rounded-2xl">Suivant</button><br>
+      </div>
+    </Phone>
+    <div>
+      <p>Prévisualisation de la page</p>
+      <router-link custom v-slot="{ navigate }" :to="'/editetapes/' + $route.query.parcoursid">
+        <button @click="navigate" role="link" class="bg-orange-600 rounded-lg w-full">Quitter</button>
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { computed } from "vue";
-import { auth } from '../../firebaseConfig'
 
+import Phone from "@/components/PhoneView.vue";
 
 export default {
+  components: {
+    Phone
+  },
   name: "ViewInfoComponent",
   data() {
     return {
@@ -66,84 +70,53 @@ export default {
       etape: {},
       etapes: {},
       parcour: '',
+      etapeMax: ''
     }
   },
   methods: {
     previous() {
-      if(parseInt(this.$route.query.ordre) > 1) {
-      this.$router.push({
-        path: '/transistate',
-        query: {
-          path: '/viewetape/' + this.etapes[parseInt(this.$route.query.ordre) - 2].etape.type + '/' + this.etapes[parseInt(this.$route.query.ordre) - 2].id,
-          parcoursid: this.$route.query.parcoursid,
-          parcours: this.parcour,
-          etapes: JSON.stringify(this.etapes),
-          ordre: this.etape.ordre - 1
-        }
-      })
-    } else {
-      this.$router.push('/editetapes/' + this.$route.query.parcoursid)
-    }
+      if (parseInt(this.$route.query.ordre) > 1) {
+        this.$router.push({
+          path: '/transistate',
+          query: {
+            path: '/viewetape/' + this.etapes[parseInt(this.$route.query.ordre) - 2].etape.type + '/' + this.etapes[parseInt(this.$route.query.ordre) - 2].id,
+            parcoursid: this.$route.query.parcoursid,
+            parcours: this.parcour,
+            etapes: JSON.stringify(this.etapes),
+            ordre: this.etape.ordre - 1
+          }
+        })
+      } else {
+        this.$router.push('/editetapes/' + this.$route.query.parcoursid)
+      }
     },
     next() {
-      if(parseInt(this.$route.query.ordre) <this.etapes.length) {
-      this.$router.push({
-        path: '/transistate',
-        query: {
-          path: '/viewetape/' + this.etapes[parseInt(this.$route.query.ordre)].etape.type + '/' + this.etapes[parseInt(this.$route.query.ordre)].id,
-          parcoursid: this.$route.query.parcoursid,
-          parcours: this.parcour,
-          etapes: JSON.stringify(this.etapes),
-          ordre: this.etape.ordre + 1
-        }
-      })
-    } else {
-      this.$router.push('/editetapes/' + this.$route.query.parcoursid)
-    }
+      if (parseInt(this.$route.query.ordre) < this.etapes.length) {
+        this.$router.push({
+          path: '/transistate',
+          query: {
+            path: '/viewetape/' + this.etapes[parseInt(this.$route.query.ordre)].etape.type + '/' + this.etapes[parseInt(this.$route.query.ordre)].id,
+            parcoursid: this.$route.query.parcoursid,
+            parcours: this.parcour,
+            etapes: JSON.stringify(this.etapes),
+            ordre: this.etape.ordre + 1
+          }
+        })
+      } else {
+        this.$router.push('/editetapes/' + this.$route.query.parcoursid)
+      }
     },
     async getInfos() {
       this.etapes = JSON.parse(this.$route.query.etapes);
       this.parcour = this.$route.query.parcours
       this.etape = this.etapes[parseInt(this.$route.query.ordre) - 1].etape
-      this.progress = (parseInt(this.$route.query.ordre - 1)) / (this.etapes.length - 1) * 100
+      this.etapeMax = this.etapes[(this.etapes.length) - 1].etape.n_etape
     },
   },
 
   async mounted() {
     await this.getInfos()
   },
-  setup() {
-    const store = useStore()
-    auth.onAuthStateChanged(user => {
-      store.dispatch("fetchUser", user);
-    });
-    const user = computed(() => {
-      return store.getters.user;
-    });
-    if (!(user.value.loggedIn)) {
-      this.$router.push('/')
-    }
-    return { user }
-  }
+
 };
 </script>
-
-<style scoped>
-.btn {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-.img {
-  width: 60%
-}
-
-.info {
-  padding: 10px;
-  margin-right: auto;
-  background-color: #ebebeb;
-  font-size: 14px;
-  border-radius: 10px;
-}
-</style>

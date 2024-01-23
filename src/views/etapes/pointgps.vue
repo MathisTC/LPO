@@ -1,110 +1,107 @@
 <template>
-  <div v-if="user.loggedIn" class="center-div">
-    <h2 align="center">
-      Création d'une transition GPS
-    </h2>
-    <v-row>
-      <v-col>
-        <h3 align="center"> Paramètres de la transition</h3>
-        <v-textarea label="Nom de la transition" rows="1" variant="outlined" no-resize autofocus required v-model="titre"></v-textarea>
-        <br>
-        <v-textarea  label="Information de la transition" rows="3" required auto-grow v-model="description" />
-        <br>
-        <h4 align="center">Position du marqueur GPS</h4>
-        <br>
-        <div class="gpsSelectContainer">
-          <v-text-field label="Latitude" placeholder="Latitude" type="number" required v-model="latitude" />
-          <br>
-          <v-text-field label="Longitude" placeholder="Longitude" type="number" required v-model="longitude" />
-          <br>
-        </div>
-        <br>
-        <v-slider step="5" thumb-label="always" :min="0" :max="100" v-model="poids"></v-slider>
-      </v-col>
-      <v-col>
-        <h3 align="center">Carte interactive </h3>
-        <div style="height:400px; width:400px">
-          <l-map id='map' ref="map" :zoom="zoom" :center="[originalLatitude, originalLongitude]">
-            <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
-              name="Carte de la ville"></l-tile-layer>
-            <l-marker draggable @update:lat-lng="Updatelatlng" :lat-lng="[latitude, longitude]"></l-marker>
-          </l-map>
-        </div>
-      </v-col>
-      <v-col>
-        <div align="center">
-          <h3 align="center"> Ajouter une image (de la carte)</h3>
-          <label for="file">
-            <svg-icon class="iconImage" type="mdi" :path="mdiPlus" :size="40"></svg-icon>
-          </label>
-          <input @change="uploadNewImage" class="inputfile" type="file" name="file" id="file" accept="image/*" />
-          <v-dialog transition="dialog-bottom-transition" width="auto">
-            <template v-slot:activator="{ props }">
-              <svg-icon v-bind="props" class="iconImage" type="mdi" :path="mdiMagnify" :size="40"></svg-icon>
-            </template>
-            <template v-slot:default="{ isActive }">
-              <v-card>
-                <v-toolbar color="green">
-                  <div>
-                    <form action="#" @submit.prevent="searchSpecies()">
-                      <input placeholder="Rechercher une espèce" v-model="espece" required autofocus />
-                      <input type="submit" hidden />
-                    </form>
-                  </div>
-                </v-toolbar>
-                <div class="container">
-                  <div class="card" v-for="espece in especes" v-bind:key="espece" @click="select(espece)">
-                    <img v-if="espece.selected" class="img-selected" :src="espece._links.file.href">
-                    <img v-else class="img" :src="espece._links.file.href">
-                  </div>
-                </div>
-                <v-card-actions class="justify-end">
-                  <v-btn variant="text" @click="isActive.value = false">Fermer</v-btn>
-                  <v-btn v-if="imagepicked" variant="text" @click="isActive.value = false, validate()">Choisir image</v-btn>
-                </v-card-actions>
-              </v-card>
-            </template>
-          </v-dialog>
-          <br>
-          <div v-if="image || bytesarray">Prévisualisation de l'image</div>
-          <img v-if="image" class="preview" :src="image" />
-          <img v-else class="preview" id="addedimage" />
-        </div>
-      </v-col>
-    </v-row>
-    <br><br>
-    <div class="precedent">
-      <button @click="createEtape()" type="submit" width="100%" class="btn greenbtn">Créer Etape</button>
+  <h2 align="center">
+    Création d'une transition GPS
+  </h2>
+  <v-row>
+    <v-col>
+      <h3 align="center"> Paramètres de la transition</h3>
+      <v-textarea label="Nom de la transition" rows="1" variant="outlined" no-resize autofocus required
+        v-model="titre"></v-textarea>
       <br>
-      <router-link custom v-slot="{ navigate }" :to="'/createetapeinparcours/' + $router.currentRoute.value.params.parcours">
-        <button @click="navigate" role="link" class="routerLink btn orangebtn">Retour</button>
-      </router-link>
-    </div>
-  </div>
-
-  <div v-else class="alert alert-danger" role="alert">
-    You are not logged in!
+      <LinkInsert />
+      <br>
+      <v-textarea label="Information de la transition" rows="3" required auto-grow v-model="description" />
+      <br>
+      <h4 align="center">Position du marqueur GPS</h4>
+      <br>
+      <div class="gpsSelectContainer">
+        <v-text-field label="Latitude" placeholder="Latitude" type="number" required v-model="latitude" />
+        <br>
+        <v-text-field label="Longitude" placeholder="Longitude" type="number" required v-model="longitude" />
+        <br>
+      </div>
+      <br>
+    </v-col>
+    <v-col>
+      <h3 align="center">Carte interactive </h3>
+      <div style="height:400px; width:400px">
+        <l-map id='map' ref="map" :zoom="zoom" :center="[originalLatitude, originalLongitude]">
+          <l-tile-layer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base"
+            name="Carte de la ville"></l-tile-layer>
+          <l-marker draggable @update:lat-lng="Updatelatlng" :lat-lng="[latitude, longitude]"></l-marker>
+        </l-map>
+      </div>
+    </v-col>
+    <v-col>
+      <div align="center">
+        <h3 align="center"> Ajouter une image (de la carte)</h3>
+        <label for="file">
+          <svg-icon class="iconImage" type="mdi" :path="mdiPlus" :size="40"></svg-icon>
+        </label>
+        <input @change="uploadNewImage" class="inputfile" type="file" name="file" id="file" accept="image/*" />
+        <v-dialog transition="dialog-bottom-transition" width="auto">
+          <template v-slot:activator="{ props }">
+            <svg-icon v-bind="props" class="iconImage" type="mdi" :path="mdiMagnify" :size="40"></svg-icon>
+          </template>
+          <template v-slot:default="{ isActive }">
+            <v-card>
+              <v-toolbar color="green">
+                <div>
+                  <form action="#" @submit.prevent="searchSpecies()">
+                    <input placeholder="Rechercher une espèce" v-model="espece" required autofocus />
+                    <input type="submit" hidden />
+                  </form>
+                </div>
+              </v-toolbar>
+              <div class="container">
+                <div class="card" v-for="espece in especes" v-bind:key="espece" @click="select(espece)">
+                  <img v-if="espece.selected" class="img-selected" :src="espece._links.file.href">
+                  <img v-else class="img" :src="espece._links.file.href">
+                </div>
+              </div>
+              <v-card-actions class="justify-end">
+                <v-btn variant="text" @click="isActive.value = false">Fermer</v-btn>
+                <v-btn v-if="imagepicked" variant="text" @click="isActive.value = false, validate()">Choisir image</v-btn>
+              </v-card-actions>
+            </v-card>
+          </template>
+        </v-dialog>
+        <br>
+        <div v-if="image || bytesarray">Prévisualisation de l'image</div>
+        <img v-if="image" class="preview" :src="image" />
+        <img v-else class="preview" id="addedimage" />
+      </div>
+    </v-col>
+  </v-row>
+  <br><br>
+  <div class="precedent">
+    <button @click="createEtape()" type="submit" width="100%" class="btn greenbtn bg-green">Créer Etape</button>
+    <br>
+    <router-link custom v-slot="{ navigate }"
+      :to="'/createetapeinparcours/' + $router.currentRoute.value.params.parcours">
+      <button @click="navigate" role="link" class="routerLink btn orangebtn">Retour</button>
+    </router-link>
   </div>
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { computed } from "vue";
-import { auth } from '../../firebaseConfig'
+
 import { uploadImage } from '../../utils/UploadImage.js'
 import { mdiMagnify } from '@mdi/js';
 import { mdiPlus } from '@mdi/js';
 import { TransiGPS } from "../../utils/etapeCreator.js"
 import { getParcoursContents, addEtapeInParcours } from "../../utils/queries.js"
 import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer, LMarker  } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LMarker } from "@vue-leaflet/vue-leaflet";
 export default {
   name: "gpsComponent",
   components: {
-    LMap, LTileLayer, LMarker 
+    LMap, LTileLayer, LMarker
   },
   data() {
     return {
+      mdiMagnify,
+      mdiPlus,
       zoom: 13,
       image: '',
       bytesarray: '',
@@ -119,7 +116,7 @@ export default {
       especes: [],
       espece: '',
       parcour: {},
-      poids: 0
+
     }
   },
   methods: {
@@ -151,8 +148,8 @@ export default {
     },
     Updatelatlng(event) {
       this.latitude = event.lat
-      this.longitude= event.lng
-  },
+      this.longitude = event.lng
+    },
     validate() {
       for (let i in this.especes) {
         if (this.especes[i].selected) {
@@ -171,21 +168,21 @@ export default {
       }
     },
     async createEtape() {
-      var gps = new TransiGPS(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.description, this.latitude, this.longitude, this.poids)
+      var gps = new TransiGPS(JSON.parse(JSON.stringify(this.parcour)).etapes.length + 1, this.titre, '', this.description, this.latitude, this.longitude)
       try {
-        const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours,gps.generateFirestoreData())
+        const id = await addEtapeInParcours(this.$router.currentRoute.value.params.parcours, gps.generateFirestoreData())
         if (this.image != '') {
-            const response = await fetch(this.image);
-            const arrayBuffer = await response.arrayBuffer();
-            const byteArray = new Uint8Array(arrayBuffer);
-            await uploadImage(byteArray, "image_etape", id, this.$router.currentRoute.value.params.parcours )
+          const response = await fetch(this.image);
+          const arrayBuffer = await response.arrayBuffer();
+          const byteArray = new Uint8Array(arrayBuffer);
+          await uploadImage(byteArray, "image_etape", id, this.$router.currentRoute.value.params.parcours)
         } else {
           if (this.bytesarray) {
-              await uploadImage(this.bytesarray, "image_etape",id, this.$router.currentRoute.value.params.parcours)          
+            await uploadImage(this.bytesarray, "image_etape", id, this.$router.currentRoute.value.params.parcours)
           }
         }
       }
-      catch(err) {
+      catch (err) {
         console.log(err)
         alert("Erreur pendant le téléchargement de l'image, l'image est peut-être trop grande (max : 2Mo)")
       }
@@ -202,10 +199,10 @@ export default {
               latitude: parseFloat(data[0].lat),
               longitude: parseFloat(data[0].lon)
             };
-            this.latitude= coordinates.latitude
-            this.longitude= coordinates.longitude
-            this.originalLatitude= coordinates.latitude
-            this.originalLongitude= coordinates.longitude
+            this.latitude = coordinates.latitude
+            this.longitude = coordinates.longitude
+            this.originalLatitude = coordinates.latitude
+            this.originalLongitude = coordinates.longitude
           } else {
             console.log("Impossible de récupérer les coordonnées pour cette ville.");
           }
@@ -222,22 +219,10 @@ export default {
       this.commune = res.data.commune;
       this.getCoordsFromCity(this.commune)
     });
-    
+
 
   },
-  setup() {
-    const store = useStore()
-    auth.onAuthStateChanged(user => {
-      store.dispatch("fetchUser", user);
-    });
-    const user = computed(() => {
-      return store.getters.user;
-    });
-    if (!(user.value.loggedIn)) {
-      this.$router.push('/')
-    }
-    return { user, mdiMagnify, mdiPlus }
-  }
+
 };
 
 </script>
@@ -286,7 +271,7 @@ export default {
 }
 
 .selectNumber {
-  width:45%;
+  width: 45%;
 }
 
 .inputfile {

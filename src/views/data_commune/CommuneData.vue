@@ -1,17 +1,17 @@
 <template>
     <div v-if="display">
         <div v-if="code_insee != ''">
-            <h1 align='center'> Données pour la commune de {{ $route.params.commune }}</h1>
-            <h2> Informations sur la répartition des espèces </h2>
+            <h1 class="text-2xl my-4" align='center'> Données pour la commune de {{ $route.params.commune }}</h1>
+            <h2 class="text-xl my-4"> Informations sur la répartition des espèces </h2>
             <geojson-table-synth :areaCode="code_insee"></geojson-table-synth>
-            <h2>Détails des espèces </h2>
+            <h2 class="text-xl my-4">Détails des espèces </h2>
             <v-row>
                 <v-col>
                     <h3>Filtres:</h3>
                 </v-col>
                 <div class="autocomp">
-                <v-autocomplete density="compact" chips fixed label="Groupe Taxonomique" :items="groupe_taxo_fr_list" multiple variant="underlined"
-                    v-model="groupe"></v-autocomplete>
+                    <v-autocomplete density="compact" chips fixed label="Groupe Taxonomique" :items="groupe_taxo_fr_list"
+                        multiple variant="underlined" v-model="groupe"></v-autocomplete>
                 </div>
                 <v-col>
                     <input type="checkbox" name="checkbox" v-model="radioReproduction" />
@@ -29,7 +29,9 @@
                     <button @click="RechercheFiltree()" class="greenbtn">Filtrer</button>
                 </v-col>
             </v-row>
-            <geojson-table :key="componentKey" :areaCode="code_insee" :protection="radioProtection" :listerouge="radioListeRouge" :reproduction="radioReproduction" :groupe="groupe" :hasloaded="componentKey"></geojson-table>
+            <geojson-table :key="componentKey" :areaCode="code_insee" :protection="radioProtection"
+                :listerouge="radioListeRouge" :reproduction="radioReproduction" :groupe="groupe"
+                :hasloaded="componentKey"></geojson-table>
         </div>
         <div v-else>
             Chargement en cours ...
@@ -97,13 +99,13 @@ export default {
 .autocomp {
     width: 20%;
 }
-.greenbtn{
-border: 1px solid #E7EAF3;
-  border-radius: 5px;
-  cursor: pointer;
-  color: #ffffff;
-  font-family: "Sora";
-  text-decoration: none;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-}
-</style>
+
+.greenbtn {
+    border: 1px solid #E7EAF3;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: "Sora";
+    text-decoration: none;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}</style>

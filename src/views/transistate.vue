@@ -1,12 +1,10 @@
 <template>
-  <div>  ETAT DE TRANSITION
-</div>
+  <div> ETAT DE TRANSITION
+  </div>
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { computed } from "vue";
-import { auth } from '../firebaseConfig'
+
 
 
 export default {
@@ -19,7 +17,7 @@ export default {
   },
 
   async mounted() {
-        this.$router.push({
+    this.$router.push({
       path: this.$route.query.path,
       query: {
         etapes: this.$route.query.etapes,
@@ -31,19 +29,7 @@ export default {
 
     })
   },
-  setup() {
-    const store = useStore()
-    auth.onAuthStateChanged(user => {
-      store.dispatch("fetchUser", user);
-    });
-    const user = computed(() => {
-      return store.getters.user;
-    });
-    if (!(user.value.loggedIn)) {
-      this.$router.push('/')
-    }
-    return { user }
-  }
+
 };
 </script>
 

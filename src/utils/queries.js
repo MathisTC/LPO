@@ -133,7 +133,6 @@ export async function getParcoursContents(id) {
         const gameInfo = 
         {
           id: queryDocumentSnapshot.id,
-          brouillon: queryDocumentSnapshot.brouillon,
           etape: queryDocumentSnapshot.data()
         }
   
@@ -276,11 +275,22 @@ export async function addEtapeInParcours(id, data){
 // Méthode d'écriture qui met à jour l'ordre de toute les étapes en fonction de 'data_etape' passé en paramètre
 export async function validateEtapesInParcours(id_parcours, data_etapes){
   let orderId = 1;
+  let maxEtape = 0;
+  console.log(data_etapes)
   // Pour chaque étape dans data_etapes, on met à jour le champs 'ordre' sur Firestore
   for(let i = 0; i < data_etapes.length; i++){
+    if(maxEtape < parseInt(data_etapes[i].etape.n_etape)) {
+      maxEtape = data_etapes[i].etape.n_etape
+    }
+    const parcoursRef = doc(db, "parcours", id_parcours);
+    await updateDoc(parcoursRef, {
+      etape_max: maxEtape
+    });
+
     const etapeRef = doc(db, "parcours", id_parcours, "etape", data_etapes[i].id);
     await updateDoc(etapeRef, {
-      ordre: orderId
+      ordre: orderId,
+      n_etape: data_etapes[i].etape.n_etape
     });
     orderId++;
   }
